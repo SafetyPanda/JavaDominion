@@ -1,9 +1,13 @@
-package LinkList;
+//James Gillman
+//3/5/18
+//Dominion 3
+//Node for Link list.
 
+package LinkList;
 public class Node implements LinkList
 {
-	private int num; 
-	private Node link;
+	private int num; //Number in link.
+	private Node link; //Link of the linklist
 
 	public Node ()
 	{
@@ -17,10 +21,12 @@ public class Node implements LinkList
 		this.num = num;
 		this.link = link;
 	}
-	
-	
-	
 
+	
+	/////////////////////////
+	// GETTERS AND SETTERS //
+	/////////////////////////
+	
 	public int getNum()
 	{
 		return num;
@@ -31,7 +37,6 @@ public class Node implements LinkList
 	{
 		this.num = num;
 	}
-
 
 	public Node getLink()
 	{
@@ -49,6 +54,6 @@ public class Node implements LinkList
 	{
 		return "Node [num=" + num + ", link=" + link + "]";
 	}
-
 	
 }
+//PROBLEMS: SEE DOMINIONPART3JRG

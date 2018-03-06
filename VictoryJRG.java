@@ -1,6 +1,6 @@
 // James Gillman
-// 2/7/2018
-// Dominion P2
+// 3/5/2018
+// Dominion P3
 // Holds all data on Victory type dominion cards.
 public class VictoryJRG extends CardJRG
 {
@@ -14,9 +14,9 @@ public class VictoryJRG extends CardJRG
 		victoryPoints = -1;	
 	}
 
-	VictoryJRG(String cardType, String cardName, int cardCost, int numberOfCards, int victoryPoints)
+	VictoryJRG(String cardType, String cardName, int cardCost, int victoryPoints)
 	{
-		super(cardType,cardName,cardCost,numberOfCards);
+		super(cardType,cardName,cardCost);
 		this.victoryPoints = victoryPoints;
 	}
 

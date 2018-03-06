@@ -1,6 +1,6 @@
 // James Gillman
-// 2/7/2018
-// Dominion P2
+// 3/5/2018
+// Dominion P3
 // Holds all of the info for Action cards!
 public class ActionJRG extends CardJRG
 {
@@ -21,9 +21,9 @@ public class ActionJRG extends CardJRG
 		victoryPoints = -1;
 	}
 	
-	ActionJRG(String cardType, String cardName, int cardCost, int numberOfCards, int worth, int addCards, int addAction, int addBuy, int victoryPoints)
+	ActionJRG(String cardType, String cardName, int cardCost, int worth, int addCards, int addAction, int addBuy, int victoryPoints)
 	{
-		super(cardType,cardName,cardCost,numberOfCards);
+		super(cardType,cardName,cardCost);
 		this.addCards = addCards;
 		this.addAction = addAction;
 		this.addBuy = addBuy;

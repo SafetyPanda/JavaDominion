@@ -1,6 +1,6 @@
 // James Gillman
-// 2/7/2018
-// Dominion P2
+// 3/5/2018
+// Dominion P3
 // Holds all extraneous data for treasure type dominion cards
 public class TreasureJRG extends CardJRG
 
@@ -13,9 +13,9 @@ public class TreasureJRG extends CardJRG
 		worth = -1;
 	}
 	
-	TreasureJRG(String cardType, String cardName, int cardCost, int numberOfCards, int worth)
+	TreasureJRG(String cardType, String cardName, int cardCost, int worth)
 	{
-		super(cardType,cardName,cardCost,numberOfCards);
+		super(cardType,cardName,cardCost);
 		this.worth = worth;	
 	}
 	

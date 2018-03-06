@@ -1,6 +1,6 @@
 // James Gillman
-// 2/7/2018
-// Dominion P2
+// 3/5/2018
+// Dominion P3
 // Holds all of the info for the pile of cards!
 public class PileJRG
 {

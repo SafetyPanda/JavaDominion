@@ -1,13 +1,12 @@
 // James Gillman
 // 2/7/2018
-// Dominion P2
+// Dominion P3
 // Superclass that holds everything that is needed by a card(shared by all subclasses)
 public abstract class CardJRG 
 {
 	protected String cardType; //Type of card being read in
 	protected String cardName; //Name of a dominion card
 	protected int cardCost; //How much does this card cost to buy?
-	protected int numberOfCards; //How many cards are of a certain type?
 	//protected String special; //Special moves. Used for extra credit down the line.
 	
 	
@@ -16,16 +15,14 @@ public abstract class CardJRG
 		cardType = "NOTHING HERE BOY";
 		cardName = "cardName";
 		cardCost = -1;
-		numberOfCards = -1;
 	
 	}
 	
-	public CardJRG(String cardType, String cardName, int cardCost, int numberOfCards)
+	public CardJRG(String cardType, String cardName, int cardCost)
 	{
 		this.cardType = cardType;
 		this.cardName = cardName;
 		this.cardCost = cardCost;
-		this.numberOfCards = numberOfCards;
 	}
 
 	/////////////////////////
@@ -48,12 +45,6 @@ public abstract class CardJRG
 		return cardCost;
 	}
 	
-	public int getNumberOfCards()
-	{
-		return numberOfCards;
-	}
-
-
 	public void setCardType( String cardType )
 	{
 		this.cardType = cardType;
@@ -68,28 +59,64 @@ public abstract class CardJRG
 	{
 		this.cardCost = cardCost;
 	}
-	
-	public void setNumberOfCards(int numberOfCards)
-	{
-		this.numberOfCards = numberOfCards;
-	}
 
 	////////////////////////////////////////////////
 	//  VERY IMPORTANT             VERY IMPORTANT //
 	////////////////////////////////////////////////
 	//  METHOD STUBS TO MAKE victoryPoints WORK!  //
+	//	METHOD STUBS TO MAKE actionCards WORK!    //
 	////////////////////////////////////////////////
 	//  VERY IMPORTANT             VERY IMPORTANT //
 	////////////////////////////////////////////////
+
+	public int getAddCards( )
+	{
+		return 0;
+	}
+
+	public int getAddAction( )
+	{
+		return 0;
+	}
+
+	public int getAddBuy( )
+	{
+		return 0;
+	}
 
 	public int getVictoryPoints( )
 	{
 		return 0;
 	}
+	
+	public int getWorth()
+	{
+		return 0;
+	}
+
+	public void setAddCards( int addCards )
+	{
+	
+	}
+
+	public void setAddAction( int addAction )
+	{
+		
+	}
+
+	public void setAddBuy( int addBuy )
+	{
+		
+	}
 
 	public void setVictoryPoints( int victoryPoints )
 	{
-		//this.victoryPoints = victoryPoints;
+
+	}
+	
+	public void setWorth ( int worth)
+	{
+		
 	}
 
 	
