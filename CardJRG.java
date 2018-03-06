@@ -92,6 +92,7 @@ public abstract class CardJRG
 		//this.victoryPoints = victoryPoints;
 	}
 
+	
 }
 
 //PROBLEMS: ON DOMINIONPART2JRG

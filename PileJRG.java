@@ -15,6 +15,7 @@ public class PileJRG
 		cardAmount = -1; //How many cards are left?
 	}
 
+	
 	/////////////////////////
 	// GETTERS AND SETTERS //
 	/////////////////////////
