@@ -18,7 +18,7 @@ public class DominionPart3JRG
 	public static void main(String []args) throws IOException
 	{
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
-		LinkList.LinkList.shuffleDeck();;
+		LinkList.Linkable.shuffleDeck();;
 		
 		readInstructions(stacksOfCards);	
 		createBoard(stacksOfCards);

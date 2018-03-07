@@ -4,7 +4,7 @@
 //Node for Link list.
 
 package LinkList;
-public class Node implements LinkList
+public class Node implements Linkable
 {
 	private int num; //Number in link.
 	private Node link; //Link of the linklist

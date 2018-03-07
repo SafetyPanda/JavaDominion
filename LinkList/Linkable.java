@@ -4,7 +4,7 @@
 //Methods needed for Linklists and game.
 
 package LinkList;
-public interface LinkList 
+public interface Linkable 
 {
 	//MethodName:ShuffleDeck
 	//Parameters: TBD
