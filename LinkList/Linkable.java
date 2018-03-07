@@ -41,5 +41,14 @@ public interface Linkable
 	{
 		
 	}
+	
+	//MethodName: addToHead
+	//Parameters: TBD
+	//Return:None
+	//Description: add Node to head..
+	public static void addToHead()
+	{
+		
+	}
 }
 //Problems: Figuring out what methods are needed.

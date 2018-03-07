@@ -244,7 +244,7 @@ public class DominionPart3JRG
 		System.out.println();
 		System.out.print("ADD CARDS: ");
 		for (int i = 0; i < 20; i++ )
-		{
+		{ 
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Action"))
 			{
 				System.out.print("  " + stackOfCards[i].getaSingularCard().getAddCards() + "        ");
