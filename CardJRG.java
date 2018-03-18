@@ -7,7 +7,7 @@ public abstract class CardJRG
 	protected String cardType; //Type of card being read in
 	protected String cardName; //Name of a dominion card
 	protected int cardCost; //How much does this card cost to buy?
-	//protected String special; //Special moves. Used for extra credit down the line.
+	protected String special; //Special moves. Used for extra credit down the line.
 	
 	
 	CardJRG()
@@ -58,6 +58,15 @@ public abstract class CardJRG
 	public void setCardCost( int cardCost )
 	{
 		this.cardCost = cardCost;
+	}
+	public String getSpecial( )
+	{
+		return special;
+	}
+	
+	public void setSpecial( String special )
+	{
+		this.special = special;
 	}
 
 	////////////////////////////////////////////////

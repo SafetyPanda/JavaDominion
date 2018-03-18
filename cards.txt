@@ -1,3 +1,13 @@
+Action
+Cellar
+10
+2
+0
+0
+0
+1
+0
+for each card discarded draw 1 card
 victory
 Estate
 15
@@ -104,16 +114,6 @@ Market
 1
 1
 none
-Action
-Cellar
-10
-2
-0
-0
-0
-1
-0
-for each card discarded draw 1 card
 *
 action
 Oasis

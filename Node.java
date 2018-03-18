@@ -3,22 +3,22 @@
 //Dominion 3
 //Node for Link list.
 
-package LinkList;
-public class Node implements Linkable
+
+public class Node 
 {
-	private int num; //Number in link.
+	
 	private Node link; //Link of the linklist
+	private CardJRG aCard;
 
 	public Node ()
 	{
-		num = -1;
-		link = null; 
+		aCard = null;
 	}
 
 
-	public Node(int num, Node link)
+	public Node(CardJRG aCard, Node link)
 	{
-		this.num = num;
+		this.aCard = aCard;
 		this.link = link;
 	}
 
@@ -27,16 +27,17 @@ public class Node implements Linkable
 	// GETTERS AND SETTERS //
 	/////////////////////////
 	
-	public int getNum()
+	public CardJRG getACard() 
 	{
-		return num;
+		return aCard;
 	}
 
 
-	public void setNum(int num)
+	public void setACard(CardJRG aCard) 
 	{
-		this.num = num;
+		this.aCard = aCard;
 	}
+
 
 	public Node getLink()
 	{
@@ -47,12 +48,6 @@ public class Node implements Linkable
 	public void setLink(Node link)
 	{
 		this.link = link;
-	}
-
-
-	public String toString()
-	{
-		return "Node [num=" + num + ", link=" + link + "]";
 	}
 	
 }

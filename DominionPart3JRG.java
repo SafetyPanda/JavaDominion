@@ -18,12 +18,45 @@ public class DominionPart3JRG
 	public static void main(String []args) throws IOException
 	{
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
-		LinkList.Linkable.shuffleDeck();;
+		
 		
 		readInstructions(stacksOfCards);	
+		gameSetUp(stacksOfCards);
+		
 		createBoard(stacksOfCards);
+		dominionMenu(stacksOfCards);
 	}
 
+	public static void dominionMenu(PileJRG []stacksOfCards)
+	{
+		char answer;
+		do
+		{
+			System.out.println("        WHAT DO YOU WANT TO DO?");
+			System.out.println("---------------------------------------");
+			System.out.println("B : View Board and Current Players Hand");
+			answer = input.nextLine().toUpperCase().charAt(0);
+		
+			if (answer == 'B')
+			{
+				createBoard(stacksOfCards);
+			}
+			else
+			{
+				System.out.println("NOT A VALID CHOICE");
+			}
+			
+		}while(answer != 'B');
+	}
+	
+	public static void gameSetUp(PileJRG[] stacksOfCards)
+	{
+		Linkable CardList = new CardList();
+		CardList.createDecks();
+		
+		
+	}
+		
 	//MethodName: readInstructions
 	//Parameters: stackOfCards: Piles of specific card types, values, name, etc.
 	//Return: NONE
@@ -36,11 +69,12 @@ public class DominionPart3JRG
 		String cardName; //Name of a dominion card
 		String cardType; //Type of card being read in
 		int cardCost; //How much does this card cost to buy?
-		int victoryPoints; //The amount of victoru points the card gives.
+		int victoryPoints; //The amount of victory points the card gives.
 		int worth; //How much does it cost to buy the card?
 		int addCards; //Action move to add a card
 		int addAction; // Lets you add an action to your turn.
 		int addBuy; //Can you buy things!
+		//String specialInfo;
 		boolean oneAsterisk = false; //Has the first asterisk in the file been reached?
 		
 		if (!inFile.exists()) 
@@ -49,36 +83,40 @@ public class DominionPart3JRG
 			System.exit(-1);
 		}
 		
-		for (int cardNumber = 0; cardNumber < 20; cardNumber++)
+		for (int cardNumber = 0; cardNumber < stackOfCards.length; cardNumber++)
 		{
 			stackOfCards[cardNumber] = new PileJRG();	
 			
 			cardType = fin.next();
 			fin.nextLine( );
 			cardName = fin.next( );
-			if (cardName.equals("*"))
+			fin.nextLine( );
+			
+			if (cardName.equals("*") || cardType.equals("*"))
 			{
 				oneAsterisk = true;
 			}
 			if (oneAsterisk == false)	
 			{
-				fin.nextLine( );
 				numberOfCards = fin.nextInt ( );
 				cardCost = fin.nextInt();
-		
 				if(cardType.equalsIgnoreCase("Victory")) //VICTORY TYPE CARDS GO IN HERE!
 				{
 					victoryPoints = fin.nextInt ( );
+					//specialInfo = fin.nextLine();
 					VictoryJRG victoryCards = new VictoryJRG(cardType, cardName, cardCost, victoryPoints);
 					stackOfCards[cardNumber].setaSingularCard ( victoryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
+					fin.next( );
 				}
 				else if (cardType.equalsIgnoreCase("Treasure")) //TREASURE TYPE CARDS GO IN HERE!
 				{
 					worth = fin.nextInt ( );
+					//specialInfo = fin.nextLine();
 					TreasureJRG treasuryCards = new TreasureJRG(cardType, cardName, cardCost, worth);
 					stackOfCards[cardNumber].setaSingularCard ( treasuryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
+					fin.next( );
 				}
 				else if (cardType.equalsIgnoreCase ("Action")) //ACTION TYPE CARDS GO IN HERE!
 				{
@@ -87,12 +125,13 @@ public class DominionPart3JRG
 					addCards = fin.nextInt();
 					addAction = fin.nextInt();
 					addBuy = fin.nextInt();
-				
+					//specialInfo = fin.nextLine();
 					ActionJRG actionCards = new ActionJRG(cardType, cardName, cardCost, worth, victoryPoints, addCards, addAction, addBuy);
 					stackOfCards[cardNumber].setaSingularCard ( actionCards );	
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
+					fin.next( );
 				}
-				fin.next( );
+				fin.nextLine( );
 			}
 			else
 			{
@@ -125,15 +164,15 @@ public class DominionPart3JRG
 	//Description: Outputs all piles in array onto a nice organized game board. (CAN PROBABLY PUT IT INTO NICER METHODS...)
 	public static void outputCard(PileJRG[] stackOfCards)
 	{
-		System.out.println("---------------------------------------------------------------------");
-		System.out.println("TREASURE");
-		System.out.println("---------------------------------------------------------------------");
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println("TREASURE (T)");
+		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Treasure"))
 			{
-				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "    ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i +") ");
 			}
 		}
 		System.out.println();
@@ -164,15 +203,15 @@ public class DominionPart3JRG
 			}		
 		}
 		System.out.println();
-		System.out.println("---------------------------------------------------------------------");
-		System.out.println("VICTORY");
-		System.out.println("---------------------------------------------------------------------");
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println("VICTORY (V)");
+		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Victory"))
 			{
-				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "    ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i + ") ");
 			}
 		}
 		System.out.println();
@@ -199,7 +238,7 @@ public class DominionPart3JRG
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Victory"))
 			{
-				System.out.print("    " + stackOfCards[i].getaSingularCard().getVictoryPoints() + "      ");
+				System.out.print("     " + stackOfCards[i].getaSingularCard().getVictoryPoints() + "     ");
 			}		
 		}
 		System.out.println();
@@ -208,19 +247,19 @@ public class DominionPart3JRG
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Victory"))
 			{
-				System.out.print(" " + stackOfCards[i].getCardAmount() + "         ");
+				System.out.print("  " + stackOfCards[i].getCardAmount() + "       ");
 			}		
 		}
 		System.out.println();
-		System.out.println("---------------------------------------------------------------------");
-		System.out.println("ACTION");
-		System.out.println("---------------------------------------------------------------------");
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println("ACTION (A)");
+		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if( stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Action"))
 			{
-				System.out.print(" " + stackOfCards[i].getaSingularCard().getCardType() + "    ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i +") ");
 			}
 		}
 		System.out.println();
@@ -265,9 +304,10 @@ public class DominionPart3JRG
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Action"))
 			{
-				System.out.print(" " + stackOfCards[i].getCardAmount() + "        ");
+				System.out.print("" + stackOfCards[i].getCardAmount() + "         ");
 			}		
 		}
+		System.out.println("\n");
 	}
 }
 //Problems: Being able to get victory points, action stuff to output, and making output look nice, WILL BE CREATING METHODS FOR ALL OF IT..
