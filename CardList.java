@@ -5,12 +5,7 @@ public class CardList implements Linkable
 	
 	public CardList()
 	{
-		
-	}
-	
-	public CardList(CardJRG aCard, Node link)
-	{
-		head = new Node(aCard, link);
+		head = null;
 	}
 	
 	//ALL METHODS IN THE INTERFACE HAVE TO BE IN HERE...
@@ -25,7 +20,7 @@ public class CardList implements Linkable
 		}
 		public void createDecks()
 		{
-			System.out.println("IN HERE");
+			
 			
 		}
 		
@@ -60,22 +55,40 @@ public class CardList implements Linkable
 		//Parameters: TBD
 		//Return:None
 		//Description: add Node to head..
-		public Node addToHead(CardJRG aCard)
+		public void addToDeck(CardJRG aSingularCard)
 		{
-			Node current = head;
-			Node card = new Node(aCard, current);
+			Node newNode;
+			Node prev;
+			Node cur;
 			
-			while(current.getLink() != null)
+			newNode = new Node();
+			
+			newNode.setACard(aSingularCard);
+			newNode.setLink(head);
+			head = newNode;
+			
+			prev = head;
+			cur = head;
+			while(cur != null)
 			{
-				curren
+				prev = cur;
+				cur = cur.getLink();
 			}
 			
-			return head;
-			
-			
-			
+			prev.setLink(newNode);
+			newNode.setLink(cur);
 		}
-	
-	
+
+
+		public void printLink()
+		{
+			Node cur = head;
+			
+			while (cur != null)
+			{
+				System.out.println(cur.getACard().cardName + " ");
+				cur = cur.getLink();
+			}
+		}
 	
 }

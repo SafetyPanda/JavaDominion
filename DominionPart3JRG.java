@@ -17,12 +17,12 @@ public class DominionPart3JRG
 	
 	public static void main(String []args) throws IOException
 	{
+		int defaultCopper = 0;
+		int defaultEstate = 0;
+		
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
-		
-		
-		readInstructions(stacksOfCards);	
-		gameSetUp(stacksOfCards);
-		
+	
+		readInCards(stacksOfCards, defaultCopper, defaultEstate);	
 		createBoard(stacksOfCards);
 		dominionMenu(stacksOfCards);
 	}
@@ -49,20 +49,22 @@ public class DominionPart3JRG
 		}while(answer != 'B');
 	}
 	
-	public static void gameSetUp(PileJRG[] stacksOfCards)
+	public static void gameSetUp(Linkable cardList, CardJRG aSingularCard)
 	{
-		Linkable CardList = new CardList();
-		CardList.createDecks();
 		
+		cardList.addToDeck(aSingularCard);
+		cardList.printLink();
 		
 	}
 		
-	//MethodName: readInstructions
+	//MethodName: readInCards
 	//Parameters: stackOfCards: Piles of specific card types, values, name, etc.
 	//Return: NONE
 	//Description: Reads and stores card data from a file.
-	public static void readInstructions(PileJRG [] stackOfCards) throws IOException
+	public static void readInCards(PileJRG [] stackOfCards, int defaultCopper, int defaultEstate) throws IOException
 	{
+		Linkable CardList = new CardList();
+		
 		inFile = new File("cards.txt");
 		Scanner fin = new Scanner(inFile);
 		int numberOfCards; //How many cards are of a certain type?
@@ -108,6 +110,12 @@ public class DominionPart3JRG
 					stackOfCards[cardNumber].setaSingularCard ( victoryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
 					fin.next( );
+					if (cardName.equalsIgnoreCase("estate") && defaultEstate < 7)
+					{
+						gameSetUp(CardList, stackOfCards[cardNumber].getaSingularCard());
+						stackOfCards[cardNumber].setCardAmount(numberOfCards - 1);
+						defaultEstate ++;
+					}
 				}
 				else if (cardType.equalsIgnoreCase("Treasure")) //TREASURE TYPE CARDS GO IN HERE!
 				{
@@ -116,6 +124,12 @@ public class DominionPart3JRG
 					TreasureJRG treasuryCards = new TreasureJRG(cardType, cardName, cardCost, worth);
 					stackOfCards[cardNumber].setaSingularCard ( treasuryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
+					if (cardName.equalsIgnoreCase("copper") && defaultCopper < 7)
+					{
+						gameSetUp(CardList, stackOfCards[cardNumber].getaSingularCard());
+						stackOfCards[cardNumber].setCardAmount(numberOfCards - 1);
+						defaultCopper ++;
+					}
 					fin.next( );
 				}
 				else if (cardType.equalsIgnoreCase ("Action")) //ACTION TYPE CARDS GO IN HERE!
