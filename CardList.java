@@ -1,7 +1,7 @@
 
 public class CardList implements Linkable
 {
-	private Node head;
+	private CardNode head;
 	
 	public CardList()
 	{
@@ -18,10 +18,30 @@ public class CardList implements Linkable
 		{
 			
 		}
-		public void createDecks()
+		
+		public void addToDecks(CardJRG aSingularCard)
 		{
+						
+			CardNode newNode;
+			CardNode prev;
+			CardNode cur;
 			
+			newNode = new CardNode();
 			
+			newNode.setACard(aSingularCard);
+			newNode.setLink(head);
+			head = newNode;
+			
+			prev = head;
+			cur = head;
+			while(cur != null)
+			{
+				prev = cur;
+				cur = cur.getLink();
+			}
+			
+			prev.setLink(newNode);
+			newNode.setLink(cur);	
 		}
 		
 		//MethodName: removeCard
@@ -51,44 +71,52 @@ public class CardList implements Linkable
 			
 		}
 		
-		//MethodName: addToHead
-		//Parameters: TBD
-		//Return:None
-		//Description: add Node to head..
-		public void addToDeck(CardJRG aSingularCard)
+
+		public void findStartingCards(CardList playerDeck, PileJRG [] stacksOfCards, String cardNeeded)
 		{
-			Node newNode;
-			Node prev;
-			Node cur;
+			int cardAmount;
+			String cardName;
 			
-			newNode = new Node();
 			
-			newNode.setACard(aSingularCard);
-			newNode.setLink(head);
-			head = newNode;
-			
-			prev = head;
-			cur = head;
-			while(cur != null)
+			for ( int i = 0; i < 20; i++)
 			{
-				prev = cur;
-				cur = cur.getLink();
+				cardName = stacksOfCards[i].getaSingularCard().getCardName();
+				if (cardName.equalsIgnoreCase(cardNeeded))
+				{
+					if(stacksOfCards[i].getaSingularCard().getCardName().equalsIgnoreCase("Copper"))
+					{
+						cardAmount = stacksOfCards[i].getCardAmount();
+						for (int x = 0; x < 7; x++) 
+						{
+							playerDeck.addToDecks(stacksOfCards[i].getaSingularCard());
+							stacksOfCards[i].setCardAmount(cardAmount - 1);	
+						}
+					}
+					else if (cardName.equalsIgnoreCase(cardNeeded))
+					{
+						cardAmount = stacksOfCards[i].getCardAmount();
+						for (int y = 0; y < 7; y++) 
+						{
+							playerDeck.addToDecks(stacksOfCards[i].getaSingularCard());
+							stacksOfCards[i].setCardAmount(cardAmount - 1);
+						}	
+					}		
+				}
 			}
-			
-			prev.setLink(newNode);
-			newNode.setLink(cur);
 		}
-
-
+		
 		public void printLink()
 		{
-			Node cur = head;
+			CardNode cur = head;
 			
 			while (cur != null)
 			{
-				System.out.println(cur.getACard().cardName + " ");
+				System.out.println(cur.getACard().cardName + " " + cur.getACard().cardCost + " " + cur.getACard().cardType);
 				cur = cur.getLink();
 			}
 		}
+
+
+		
 	
 }

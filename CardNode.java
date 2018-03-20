@@ -4,19 +4,19 @@
 //Node for Link list.
 
 
-public class Node 
+public class CardNode 
 {
 	
-	private Node link; //Link of the linklist
+	private CardNode link; //Link of the linklist
 	private CardJRG aCard;
 
-	public Node ()
+	public CardNode ()
 	{
 		aCard = null;
 	}
 
 
-	public Node(CardJRG aCard, Node link)
+	public CardNode(CardJRG aCard, CardNode link)
 	{
 		this.aCard = aCard;
 		this.link = link;
@@ -39,13 +39,13 @@ public class Node
 	}
 
 
-	public Node getLink()
+	public CardNode getLink()
 	{
 		return link;
 	}
 
 
-	public void setLink(Node link)
+	public void setLink(CardNode link)
 	{
 		this.link = link;
 	}

@@ -6,7 +6,7 @@
 import java.io.*;
 import java.util.Scanner;
 
-public class DominionPart3JRG 
+public class DominionPart5JRG 
 {
 	
 	
@@ -17,16 +17,29 @@ public class DominionPart3JRG
 	
 	public static void main(String []args) throws IOException
 	{
-		int defaultCopper = 0;
-		int defaultEstate = 0;
-		
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
-	
-		readInCards(stacksOfCards, defaultCopper, defaultEstate);	
+		
+		readInCards(stacksOfCards);
+		
 		createBoard(stacksOfCards);
+		createPlayers(stacksOfCards);
 		dominionMenu(stacksOfCards);
+		
 	}
-
+	
+	public static void createPlayers(PileJRG[] stacksOfCards)
+	{
+		int pAns;
+		System.out.println("How many players...");
+		pAns = input.nextInt();
+		
+		Player plist = new Player();
+		
+		plist.createPlayers(pAns, stacksOfCards);
+		plist.printPlayerList();
+		
+	}
+	
 	public static void dominionMenu(PileJRG []stacksOfCards)
 	{
 		char answer;
@@ -34,10 +47,10 @@ public class DominionPart3JRG
 		{
 			System.out.println("        WHAT DO YOU WANT TO DO?");
 			System.out.println("---------------------------------------");
-			System.out.println("B : View Board and Current Players Hand");
+			System.out.println("V : View Board and Current Players Hand");
 			answer = input.nextLine().toUpperCase().charAt(0);
 		
-			if (answer == 'B')
+			if (answer == 'V')
 			{
 				createBoard(stacksOfCards);
 			}
@@ -46,25 +59,15 @@ public class DominionPart3JRG
 				System.out.println("NOT A VALID CHOICE");
 			}
 			
-		}while(answer != 'B');
+		}while(answer != 'V');
 	}
-	
-	public static void gameSetUp(Linkable cardList, CardJRG aSingularCard)
-	{
-		
-		cardList.addToDeck(aSingularCard);
-		cardList.printLink();
-		
-	}
-		
+			
 	//MethodName: readInCards
 	//Parameters: stackOfCards: Piles of specific card types, values, name, etc.
 	//Return: NONE
 	//Description: Reads and stores card data from a file.
-	public static void readInCards(PileJRG [] stackOfCards, int defaultCopper, int defaultEstate) throws IOException
+	public static void readInCards(PileJRG [] stackOfCards) throws IOException
 	{
-		Linkable CardList = new CardList();
-		
 		inFile = new File("cards.txt");
 		Scanner fin = new Scanner(inFile);
 		int numberOfCards; //How many cards are of a certain type?
@@ -110,12 +113,6 @@ public class DominionPart3JRG
 					stackOfCards[cardNumber].setaSingularCard ( victoryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
 					fin.next( );
-					if (cardName.equalsIgnoreCase("estate") && defaultEstate < 7)
-					{
-						gameSetUp(CardList, stackOfCards[cardNumber].getaSingularCard());
-						stackOfCards[cardNumber].setCardAmount(numberOfCards - 1);
-						defaultEstate ++;
-					}
 				}
 				else if (cardType.equalsIgnoreCase("Treasure")) //TREASURE TYPE CARDS GO IN HERE!
 				{
@@ -124,12 +121,6 @@ public class DominionPart3JRG
 					TreasureJRG treasuryCards = new TreasureJRG(cardType, cardName, cardCost, worth);
 					stackOfCards[cardNumber].setaSingularCard ( treasuryCards );
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
-					if (cardName.equalsIgnoreCase("copper") && defaultCopper < 7)
-					{
-						gameSetUp(CardList, stackOfCards[cardNumber].getaSingularCard());
-						stackOfCards[cardNumber].setCardAmount(numberOfCards - 1);
-						defaultCopper ++;
-					}
 					fin.next( );
 				}
 				else if (cardType.equalsIgnoreCase ("Action")) //ACTION TYPE CARDS GO IN HERE!
