@@ -41,7 +41,8 @@ public class CardList implements Linkable
 			}
 			
 			prev.setLink(newNode);
-			newNode.setLink(cur);	
+			newNode.setLink(cur);
+			//return head;
 		}
 		
 		//MethodName: removeCard
@@ -80,19 +81,20 @@ public class CardList implements Linkable
 			
 			for ( int i = 0; i < 20; i++)
 			{
-				cardName = stacksOfCards[i].getaSingularCard().getCardName();
-				if (cardName.equalsIgnoreCase(cardNeeded))
+				
+				if (stacksOfCards[i].getCardAmount()!= -1 && stacksOfCards[i].getaSingularCard().getCardName().equalsIgnoreCase(cardNeeded))
 				{
-					if(stacksOfCards[i].getaSingularCard().getCardName().equalsIgnoreCase("Copper"))
+					if(stacksOfCards[i].getaSingularCard().getCardName().equalsIgnoreCase("copper"))
 					{
 						cardAmount = stacksOfCards[i].getCardAmount();
 						for (int x = 0; x < 7; x++) 
 						{
+							System.out.println("IN HERE");
 							playerDeck.addToDecks(stacksOfCards[i].getaSingularCard());
 							stacksOfCards[i].setCardAmount(cardAmount - 1);	
 						}
 					}
-					else if (cardName.equalsIgnoreCase(cardNeeded))
+					else if (stacksOfCards[i].getaSingularCard().getCardName().equalsIgnoreCase("Estate"))
 					{
 						cardAmount = stacksOfCards[i].getCardAmount();
 						for (int y = 0; y < 7; y++) 

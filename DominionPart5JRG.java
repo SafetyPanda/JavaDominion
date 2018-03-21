@@ -20,7 +20,6 @@ public class DominionPart5JRG
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
 		
 		readInCards(stacksOfCards);
-		
 		createBoard(stacksOfCards);
 		createPlayers(stacksOfCards);
 		dominionMenu(stacksOfCards);
@@ -33,10 +32,10 @@ public class DominionPart5JRG
 		System.out.println("How many players...");
 		pAns = input.nextInt();
 		
-		Player plist = new Player();
+		Player plist = new Player(pAns, stacksOfCards);
 		
 		plist.createPlayers(pAns, stacksOfCards);
-		plist.printPlayerList();
+		
 		
 	}
 	
@@ -45,11 +44,12 @@ public class DominionPart5JRG
 		char answer;
 		do
 		{
+			input.nextLine();
 			System.out.println("        WHAT DO YOU WANT TO DO?");
 			System.out.println("---------------------------------------");
 			System.out.println("V : View Board and Current Players Hand");
 			answer = input.nextLine().toUpperCase().charAt(0);
-		
+			
 			if (answer == 'V')
 			{
 				createBoard(stacksOfCards);
