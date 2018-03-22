@@ -1,34 +1,34 @@
 
 public class PlayerList 
 {
-	protected PlayerNode start;
-	protected PlayerNode end;
-	public int size;
+	private PlayerNode head;
 			
 	public PlayerList()
 	{
-		start = null;
-		end = null;
-		size = 0;
+		head = null;
 	}
 			
-	public void insertAtStart(Player aPlayer)
+	public PlayerNode insertAthead(Player aPlayer, PlayerNode head)
 	{
+		
 		PlayerNode newptr = new PlayerNode(null,aPlayer);
-		newptr.setLink(start);
-		if(start == null)
+		
+		if(head.getLink() == null)
 		{
-			start = newptr;
-			newptr.setLink(start);
-			end = start;
+			head.setLink(newptr); //sets newptr to link to head
+			newptr.setLink(head);
+			newptr.setaPlayer(aPlayer);			
 		}
+		
 		else
 		{
-			end.setLink(newptr);
-			start = newptr;
+			newptr.setLink(head.getLink());
+			head.setLink(newptr);
+			newptr.setaPlayer(aPlayer);
 		}
-			size++;
-		}
-			
+				
+		return head; //if head can change you want to return it
+		
+	}
 	
 }

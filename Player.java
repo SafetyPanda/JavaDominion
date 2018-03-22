@@ -1,3 +1,4 @@
+import java.util.Collections;
 
 public class Player
 {
@@ -8,40 +9,63 @@ public class Player
 	
 	public Player()
 	{
-		//DEFAULT CONSTRUCTOR//
+		playerDeck = null;
+		playerHand = null;
+		playerDiscard = null;
 	}
 	
 	public Player(int pNum, PileJRG[] stackOfCards)
 	{
-		String cardNeeded = "Copper";
+		playerDiscard = new CardList();
+		playerDeck  = new CardList();
+		playerHand  = new CardList();
+		
 		this.playerID = pNum;
 		
-		playerDeck  = new CardList();
+		playerDeck.findStartingCards(playerDeck, stackOfCards);
+		playerDeck.shuffleDeck();
 		
-		for( int i = 0; i < 2; i++)
-		{
-			playerDeck.findStartingCards(playerDeck, stackOfCards, cardNeeded);
-			cardNeeded = "Estate";
-		}
+		playerHand.moveCardToHand(playerDeck,playerHand,playerDiscard, 4);
+		System.out.println("PRINTING HAND");
+		playerHand.printLink();
 		
-		playerHand  = new CardList();
-		playerDiscard = new CardList();
-		playerDeck.printLink();
+		
+	}
+
+	//
+	// GETTERS AND SETTERS //
+	//					   //
+	public int getPlayerID() {
+		return playerID;
+	}
+
+	public void setPlayerID(int playerID) {
+		this.playerID = playerID;
+	}
+
+	public CardList getPlayerDeck() {
+		return playerDeck;
+	}
+
+	public void setPlayerDeck(CardList playerDeck) {
+		this.playerDeck = playerDeck;
+	}
+
+	public CardList getPlayerHand() {
+		return playerHand;
+	}
+
+	public void setPlayerHand(CardList playerHand) {
+		this.playerHand = playerHand;
+	}
+
+	public CardList getPlayerDiscard() {
+		return playerDiscard;
+	}
+
+	public void setPlayerDiscard(CardList playerDiscard) {
+		this.playerDiscard = playerDiscard;
 	}
 	
-	public void createPlayers(int maxPlayers, PileJRG[] stacksOfCards)
-	{
-		int count = 1; 
-		PlayerList listOfPlayers = new PlayerList();
-		
-		while(count < maxPlayers + 1)
-		{
-			Player meow = new Player(count, stacksOfCards);
-			System.out.println("Adding Node " + count + "at Start" );
-			listOfPlayers.insertAtStart(meow);
-			meow.playerDeck.printLink();
-			count++;
-		}
-	}
 	
 }

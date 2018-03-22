@@ -18,48 +18,58 @@ public class DominionPart5JRG
 	public static void main(String []args) throws IOException
 	{
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
+		PlayerNode plist = new PlayerNode();
 		
 		readInCards(stacksOfCards);
-		createBoard(stacksOfCards);
-		createPlayers(stacksOfCards);
-		dominionMenu(stacksOfCards);
+		createPlayers(stacksOfCards, plist);
+		dominionMenu(stacksOfCards, plist);
 		
 	}
 	
-	public static void createPlayers(PileJRG[] stacksOfCards)
+	public static void createPlayers(PileJRG[] stacksOfCards, PlayerNode plist)
 	{
 		int pAns;
 		System.out.println("How many players...");
 		pAns = input.nextInt();
-		
-		Player plist = new Player(pAns, stacksOfCards);
-		
-		plist.createPlayers(pAns, stacksOfCards);
-		
-		
+		plist.createPlayers(pAns, stacksOfCards);	
 	}
 	
-	public static void dominionMenu(PileJRG []stacksOfCards)
+	public static void dominionMenu(PileJRG []stacksOfCards, PlayerNode plist)
 	{
+				
 		char answer;
 		do
 		{
+			
+			
 			input.nextLine();
-			System.out.println("        WHAT DO YOU WANT TO DO?");
-			System.out.println("---------------------------------------");
-			System.out.println("V : View Board and Current Players Hand");
+			System.out.print("ITS YOUR TURN PLAYER: ");
+			
+			System.out.print(plist.getLink().getaPlayer().getPlayerID() + 1);
+			System.out.println("!");
+			System.out.println("*----------------------------------------*");
+			System.out.println("|        WHAT DO YOU WANT TO DO?         |");
+			System.out.println("*----------------------------------------*");
+			System.out.println("| H: View Board and Current Players Hand |");
+			System.out.println("| B: Buy a Card                          |");
+			System.out.println("| Q: End Your Turn!                      |");
+			System.out.println("*----------------------------------------*");
+			
 			answer = input.nextLine().toUpperCase().charAt(0);
 			
-			if (answer == 'V')
+			if (answer == 'H')
 			{
 				createBoard(stacksOfCards);
+				plist.getLink().getaPlayer().getPlayerHand().printHand();
 			}
-			else
+			else if (answer == 'Q')
 			{
-				System.out.println("NOT A VALID CHOICE");
+				plist = plist.getLink();
+				plist.getLink().getaPlayer().getPlayerDeck().shuffleDeck();
 			}
 			
-		}while(answer != 'V');
+			
+		}while(answer != 'H');
 	}
 			
 	//MethodName: readInCards
