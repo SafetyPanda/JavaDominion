@@ -12,7 +12,9 @@ public interface Linkable
 			
 			public void findStartingCards(CardList playerDeck, PileJRG [] stackOfCards);
 			
-			public void removeCard(CardList playerDiscard);
+			public void removeCardFromDeck(CardList playerDiscard);
+			
+			public void removeCardFromDiscard(CardList playerDeck);
 
 			public void reviveGraveyard(CardList playerDeck, CardList playerDiscard);
 			
@@ -21,5 +23,7 @@ public interface Linkable
 			public void printLink();
 			
 			public void printHand();
+			
+			public int calculateGold();
 }
 //Problems: Figuring out what methods are needed.

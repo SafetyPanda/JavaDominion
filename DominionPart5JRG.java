@@ -17,13 +17,19 @@ public class DominionPart5JRG
 	
 	public static void main(String []args) throws IOException
 	{
+		boolean gameDone = true;
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
 		PlayerNode plist = new PlayerNode();
 		
 		readInCards(stacksOfCards);
 		createPlayers(stacksOfCards, plist);
-		dominionMenu(stacksOfCards, plist);
-		
+		input.nextLine();
+		do
+		{
+			dominionMenu(stacksOfCards, plist);
+			gameDone = checkGame(stacksOfCards);
+		}while(gameDone == false);
+		calculateFinalScores(plist);
 	}
 	
 	public static void createPlayers(PileJRG[] stacksOfCards, PlayerNode plist)
@@ -36,17 +42,18 @@ public class DominionPart5JRG
 	
 	public static void dominionMenu(PileJRG []stacksOfCards, PlayerNode plist)
 	{
-				
+		int goldAmount;
 		char answer;
+		//input.nextLine();
+		plist.getLink().getaPlayer().getPlayerDeck().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(),5);
 		do
 		{
 			
-			
-			input.nextLine();
 			System.out.print("ITS YOUR TURN PLAYER: ");
 			
 			System.out.print(plist.getLink().getaPlayer().getPlayerID() + 1);
 			System.out.println("!");
+			
 			System.out.println("*----------------------------------------*");
 			System.out.println("|        WHAT DO YOU WANT TO DO?         |");
 			System.out.println("*----------------------------------------*");
@@ -57,21 +64,70 @@ public class DominionPart5JRG
 			
 			answer = input.nextLine().toUpperCase().charAt(0);
 			
-			if (answer == 'H')
-			{
-				createBoard(stacksOfCards);
-				plist.getLink().getaPlayer().getPlayerHand().printHand();
-			}
-			else if (answer == 'Q')
-			{
-				plist = plist.getLink();
-				plist.getLink().getaPlayer().getPlayerDeck().shuffleDeck();
-			}
 			
-			
-		}while(answer != 'H');
+			switch(answer)
+			{
+				case('H'):
+				{
+					createBoard(stacksOfCards);
+					plist.getLink().getaPlayer().getPlayerHand().printHand();
+					goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
+					System.out.println("You have [" + goldAmount + "] gold!");
+					break;
+				}
+				case('B'):
+				{
+					createBoard(stacksOfCards);
+					goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
+					System.out.println("You have [" + goldAmount + "] gold!");
+					buyingACard();
+					break;
+				}
+			}	
+		}while(answer != 'B');
 	}
 			
+	//
+	//
+	//
+	//
+	public static void buyingACard()
+	{
+		
+		
+		
+		
+	}
+	
+	public static boolean checkCards(PileJRG []stackOfCards)
+	{
+		int emptyStack = 0;
+		for(int i = 0; i < stackOfCards.length; i++)
+		{
+			if(stackOfCards[i].getCardAmount() == 0)
+			{
+				emptyStack++;
+			}
+		}
+			if(emptyStack <= 3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		
+	
+	}
+			
+	
+	
+	
+	
+	
 	//MethodName: readInCards
 	//Parameters: stackOfCards: Piles of specific card types, values, name, etc.
 	//Return: NONE

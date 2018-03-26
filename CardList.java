@@ -17,17 +17,39 @@ public class CardList implements Linkable
 		//Description: Shuffle decks!
 		public void shuffleDeck()
 		{
-			CardNode cur = head;
-			int listIndex = 1;
+			CardNode cur;
+		    CardNode random;
+		    CardJRG temp;
+		    int numCards = 0;
+		    
+		    int rand;
+		    cur = head;
 			
 			while (cur != null)
 			{
-				listIndex++;
 				cur = cur.getLink();
+				numCards++;	
 			}
-			
-	
-		
+		    
+		    for (int j=0; j<numCards; j++)
+		    {
+		        for (int i=0; i<numCards; i++)
+		        {
+		            cur = head;
+		            random = head;
+
+		            rand = (int)(Math.random() * numCards);
+
+		            for(int k = 0; k < rand; k++)
+		                random = random.getLink();
+
+		            temp = cur.getACard();
+		            cur.setACard(random.getACard());
+
+		            random.setACard(temp);
+		        }
+		    } 
+		    System.out.println("SHUFFLING THAT DECK!");
 		}
 		
 		
@@ -36,33 +58,43 @@ public class CardList implements Linkable
 			CardNode new_node = new CardNode();
 			new_node.setACard(aSingularCard);
 			new_node.setLink(head);
-			head = new_node;			
-			
+			head = new_node;	
+		}
+		
+		//
+		//
+		//
+		//
+		public void removeCardFromDiscard(CardList playerDeck)
+		{
+			CardNode cur = head;
+			if (head != null)
+		    {
+		    	playerDeck.addToDecks(cur.getACard());
+				head = head.getLink();
+		    }
+		    else
+		    {
+		    	System.out.println("NO CARDS, Something went wrong...");
+		    	System.exit(0);
+		    }
 		}
 		
 		//MethodName: removeCard
 		//Parameters: TBD
 		//Return: NONE
 		//Description: Remove card from Players Hand
-		public void removeCard(CardList playerDiscard)
+		public void removeCardFromDeck(CardList playerDiscard)
 		{
-			CardNode cur = playerDiscard.head;
+			CardNode cur = head;
 			if (head != null)
 		    {
-		    	
-		    	CardJRG aSingularCard = cur.getACard();
-				CardNode new_node = new CardNode();
-			
-				new_node.setACard(aSingularCard);
-				new_node.setLink(head);
-			
-				head = new_node;
-		    	head = head.getLink();
+		    	playerDiscard.addToDecks(cur.getACard());
+				head = head.getLink();
 		    }
 		    else
 		    {
 		    	System.out.println("NO CARDS, Something went wrong...");
-		    	System.exit(0);
 		    }
 		}
 		
@@ -72,22 +104,15 @@ public class CardList implements Linkable
 		//Description: Grab Cards from Graveyard and shuffle back into deck
 		public void reviveGraveyard(CardList playerDeck, CardList playerDiscard)
 		{
+			CardNode cur = head;
 			
-			CardNode cur = playerDiscard.head;
-			while (cur != null)
-			{									
-				CardJRG aSingularCard = cur.getACard();
-				CardNode new_node = new CardNode();
-			
-				new_node.setACard(aSingularCard);
-				new_node.setLink(head);
-			
-				head = new_node;
-				playerDiscard.removeCard(playerDiscard);
+			while(cur != null)
+			{
+				playerDeck.addToDecks(cur.getACard());
+				playerDiscard.removeCardFromDiscard(playerDeck);
 				cur = cur.getLink();
 			}
-				
-			
+			System.out.println("CREATING DECK FROM GRAVEYARD");
 		}
 		
 		//MethodName: moveCardToHand()
@@ -99,22 +124,23 @@ public class CardList implements Linkable
 			int count = 0;
 			
 			
-			while(count < cardDraw)
+			while(count < 5) //always draw 5.
 			{
 				CardNode cur = playerDeck.head;
 				if (cur == null)
 				{
-					reviveGraveyard(playerDeck, playerDiscard);
+					System.out.println("DECK IS EMPTY, GOING TO DISCARD AND ");
+					playerDiscard.reviveGraveyard(playerDeck, playerDiscard);
 					cur = playerDeck.head;
 				}
-				CardJRG aSingularCard = cur.getACard();
+				
 				CardNode new_node = new CardNode();
 				
-				new_node.setACard(aSingularCard);
+				new_node.setACard(cur.getACard());
 				new_node.setLink(head);
 				
 				head = new_node;
-				playerDeck.removeCard(playerDiscard);
+				playerDeck.removeCardFromDeck(playerDiscard);
 				cur = cur.getLink();
 				count++;
 			}
@@ -162,7 +188,7 @@ public class CardList implements Linkable
 			
 			while (cur != null)
 			{
-				
+				System.out.println(cur.getACard().cardName);
 				cur = cur.getLink();
 			}
 		}
@@ -170,8 +196,10 @@ public class CardList implements Linkable
 		public void printHand()
 		{
 			CardNode cur = head;
+		
+			System.out.println("----------------------------------------------------------------------------------------");
 			System.out.println("CURRENT HAND:");
-			System.out.println("-------------------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------");
 			while (cur != null)
 			{
 				
@@ -179,6 +207,23 @@ public class CardList implements Linkable
 				System.out.println("");
 				cur = cur.getLink();
 			}
+		}
+		
+		public int calculateGold()
+		{
+			CardNode cur = head;
+			int goldAmount = 0;
+			
+			while (cur != null)
+			{
+				
+				if(cur.getACard().getCardType().equalsIgnoreCase("treasure"))
+				{
+					goldAmount = goldAmount + cur.getACard().getWorth(); 
+				}
+				cur = cur.getLink();
+			}
+			return goldAmount;
 		}
 
 

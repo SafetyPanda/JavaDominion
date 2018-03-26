@@ -1,4 +1,3 @@
-import java.util.Collections;
 
 public class Player
 {
@@ -23,12 +22,9 @@ public class Player
 		this.playerID = pNum;
 		
 		playerDeck.findStartingCards(playerDeck, stackOfCards);
+		playerDeck.printLink();
 		playerDeck.shuffleDeck();
-		
-		playerHand.moveCardToHand(playerDeck,playerHand,playerDiscard, 4);
-		System.out.println("PRINTING HAND");
-		playerHand.printLink();
-		
+		playerHand.moveCardToHand(playerDeck,playerHand,playerDiscard,5);
 		
 	}
 
