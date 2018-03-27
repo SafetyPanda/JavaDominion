@@ -1,6 +1,6 @@
 // James Gillman
-// 2/7/2018
-// Dominion P3
+// March 26th 2018
+// Dominion P7
 // Superclass that holds everything that is needed by a card(shared by all subclasses)
 public abstract class CardJRG 
 {
@@ -127,8 +127,6 @@ public abstract class CardJRG
 	{
 		
 	}
-
-	
 }
 
-//PROBLEMS: ON DOMINIONPART2JRG
+//PROBLEMS: ON DOMINIONPART7JRG

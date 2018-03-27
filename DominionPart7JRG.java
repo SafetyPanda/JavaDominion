@@ -1,15 +1,13 @@
 // James Gillman
-// 3/5/2018
-// Dominion P3
-// Stores data from file and then outputs data on a nice display! Beginnings of linkedList forming in the LinkList package.
+// 3/26/2018
+// Dominion P7
+// Plays a whole game of dominion. 
 
 import java.io.*;
 import java.util.Scanner;
 
-public class DominionPart5JRG 
+public class DominionPart7JRG 
 {
-	
-	
 	public static Scanner input = new Scanner(System.in);
 	public static java.io.File inFile;
 	public static java.io.File outFile;
@@ -17,38 +15,55 @@ public class DominionPart5JRG
 	
 	public static void main(String []args) throws IOException
 	{
-		boolean gameDone = true;
+		boolean gameDone = false;
+		int pAns = 0;
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
 		PlayerNode plist = new PlayerNode();
 		
 		readInCards(stacksOfCards);
-		createPlayers(stacksOfCards, plist);
+		pAns = createPlayers(stacksOfCards, plist);
 		input.nextLine();
-		do
+		
+		while(gameDone == false)
 		{
+			plist = plist.getLink();
 			dominionMenu(stacksOfCards, plist);
-			gameDone = checkGame(stacksOfCards);
-		}while(gameDone == false);
-		calculateFinalScores(plist);
+			
+			gameDone = checkCards(stacksOfCards);
+		}
+		plist = plist.getLink();
+		calculateFinalScores(plist, pAns);
 	}
 	
-	public static void createPlayers(PileJRG[] stacksOfCards, PlayerNode plist)
+	//methodName: createPlayers
+	//Parameters: stacksOfCards: array of every card type/name in the game. plist: circular linklist of players.
+	//Return: pAns: total amount of players.
+	//Description: Asks how many players are going to be created and creats a circular linked list to do it.
+	public static int createPlayers(PileJRG[] stacksOfCards, PlayerNode plist)
 	{
 		int pAns;
-		System.out.println("How many players...");
+		System.out.println("WELCOME TO DOMININION! HOW MANY PLAYERS ARE PLAYING TODAY!?");
 		pAns = input.nextInt();
 		plist.createPlayers(pAns, stacksOfCards);	
+		return pAns;
 	}
 	
+	//MethodName: dominionMenu
+	//Parameters: stacksOfCards: array of every card type/name in the game. plist: circular linklist of players. 
+	//Return: NONE
+	//Description: Creates and allows the player to select different moves throughout the game.
 	public static void dominionMenu(PileJRG []stacksOfCards, PlayerNode plist)
 	{
 		int goldAmount;
+		int buyAmount = plist.getLink().getaPlayer().getPlayerHand().calculateBuys();
+		if (buyAmount == 0) //sets amount of buy moves they can do to one always, otherwise cards step in.
+		{
+			buyAmount = 1;
+		}
+		int addActions = plist.getLink().getaPlayer().getPlayerHand().calculateActions();
 		char answer;
-		//input.nextLine();
-		plist.getLink().getaPlayer().getPlayerDeck().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(),5);
 		do
 		{
-			
 			System.out.print("ITS YOUR TURN PLAYER: ");
 			
 			System.out.print(plist.getLink().getaPlayer().getPlayerID() + 1);
@@ -60,45 +75,79 @@ public class DominionPart5JRG
 			System.out.println("| H: View Board and Current Players Hand |");
 			System.out.println("| B: Buy a Card                          |");
 			System.out.println("| Q: End Your Turn!                      |");
+			System.out.println("|----------------------------------------|");
+			System.out.println("| Total Actions In Hand Is: " + addActions +"            |");
+			System.out.println("| Total Buys Left Is: " + buyAmount +"                  |");
 			System.out.println("*----------------------------------------*");
 			
 			answer = input.nextLine().toUpperCase().charAt(0);
-			
-			
+	
 			switch(answer)
 			{
 				case('H'):
 				{
 					createBoard(stacksOfCards);
 					plist.getLink().getaPlayer().getPlayerHand().printHand();
-					goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
-					System.out.println("You have [" + goldAmount + "] gold!");
 					break;
 				}
 				case('B'):
+				{				
+					if(buyAmount > 0)
+					{
+						createBoard(stacksOfCards);
+						goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
+						goldAmount = buyingACard(stacksOfCards, plist, goldAmount);
+						buyAmount --;
+						break;
+					}
+					else
+					{
+						System.out.println("You don't have any buys left. Choose something else...");
+					}
+				}
+				case ('Q'):
 				{
-					createBoard(stacksOfCards);
-					goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
-					System.out.println("You have [" + goldAmount + "] gold!");
-					buyingACard();
-					break;
+					System.out.println("Discarding all Cards in hand");
+					plist.getLink().getaPlayer().getPlayerHand().cleanHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard());	
 				}
 			}	
-		}while(answer != 'B');
-	}
-			
-	//
-	//
-	//
-	//
-	public static void buyingACard()
-	{
-		
-		
-		
-		
+		}while(answer != 'Q');
 	}
 	
+	//MethodName: buyingACard
+	//Parameters:  stacksOfCards: array of every card type/name in the game. plist: circular linklist of players. goldAmount: how much gold does the player have?
+	//Return: goldAmount
+	//Description: Allows player to buy a card and sends it to their discard.
+	public static int buyingACard(PileJRG []stacksOfCards, PlayerNode plist, int goldAmount)
+	{
+		int cardChoice;
+		System.out.println("Choose the card you want to buy.");
+		System.out.println("You have [" + goldAmount + "] gold available to spend!");
+		cardChoice = input.nextInt();
+		if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() <= goldAmount)
+		{
+			System.out.println("Adding to discard");
+			goldAmount = goldAmount - stacksOfCards[cardChoice].getaSingularCard().getCardCost();
+			plist.getLink().getaPlayer().getPlayerDiscard().addToDecks(stacksOfCards[cardChoice].getaSingularCard());
+			stacksOfCards[cardChoice].setCardAmount(stacksOfCards[cardChoice].getCardAmount() - 1);
+			String junk = input.nextLine();
+			System.out.println(junk);
+		}
+		else
+		{
+			System.out.println("Whoops! Looks like you don't have enough.");
+			System.out.println("Press Enter To Go back to the Menu");
+			String junk = input.nextLine();
+			System.out.println(junk);
+			input.nextLine();
+		}
+		return goldAmount;
+	}
+	
+	//MethodName: checkCards
+	//Parameters: stackOfCards:
+	//Return: boolean of whether or not the array has three decks empty.
+	//Description: Checks the cards in each of the array
 	public static boolean checkCards(PileJRG []stackOfCards)
 	{
 		int emptyStack = 0;
@@ -117,16 +166,25 @@ public class DominionPart5JRG
 			{
 				return false;
 			}
-		}
-		
-		
-	
 	}
-			
-	
-	
-	
-	
+
+	//MethodName: calculateFinalScores
+	//Parameters: plist: circular linkedlist of players, pAns: how many players are currently playing?
+	//Return: NONE
+	//Description: Calculates the final scores of each player and declares winners.
+	public static void calculateFinalScores(PlayerNode plist, int pAns)	
+	{
+		plist = plist.getLink();
+		int totalPoints = 0;
+		for (int i = 0; i < pAns; i++)
+		{
+			totalPoints = plist.getLink().getaPlayer().getPlayerDeck().calculateVictoryPoints();
+			totalPoints = totalPoints + plist.getLink().getaPlayer().getPlayerHand().calculateVictoryPoints();
+			totalPoints = totalPoints + plist.getLink().getaPlayer().getPlayerDiscard().calculateVictoryPoints();
+			System.out.println("Player " + (plist.getLink().getaPlayer().getPlayerID() + 1) + "'s final score is" + totalPoints);
+			plist = plist.getLink();
+		}
+	}
 	
 	//MethodName: readInCards
 	//Parameters: stackOfCards: Piles of specific card types, values, name, etc.
@@ -236,14 +294,14 @@ public class DominionPart5JRG
 	public static void outputCard(PileJRG[] stackOfCards)
 	{
 		System.out.println("----------------------------------------------------------------------------------------");
-		System.out.println("TREASURE (T)");
+		System.out.println("TREASURE");
 		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Treasure"))
 			{
-				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i +") ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "[" + i +"] ");
 			}
 		}
 		System.out.println();
@@ -275,14 +333,14 @@ public class DominionPart5JRG
 		}
 		System.out.println();
 		System.out.println("----------------------------------------------------------------------------------------");
-		System.out.println("VICTORY (V)");
+		System.out.println("VICTORY");
 		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Victory"))
 			{
-				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i + ") ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "[" + i + "] ");
 			}
 		}
 		System.out.println();
@@ -323,14 +381,14 @@ public class DominionPart5JRG
 		}
 		System.out.println();
 		System.out.println("----------------------------------------------------------------------------------------");
-		System.out.println("ACTION (A)");
+		System.out.println("ACTION ");
 		System.out.println("----------------------------------------------------------------------------------------");
 		System.out.print("CARD TYPE: ");
 		for (int i = 0; i < 20; i++ )
 		{
 			if( stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Action"))
 			{
-				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "(" + i +") ");
+				System.out.print(stackOfCards[i].getaSingularCard().getCardType() + "[" + i +"] ");
 			}
 		}
 		System.out.println();
@@ -341,6 +399,15 @@ public class DominionPart5JRG
 			{
 				System.out.print(stackOfCards[i].getaSingularCard().getCardName() + "   ");			
 			}
+		}
+		System.out.println();
+		System.out.print("CARD COST: ");
+		for (int i = 0; i < 20; i++ )
+		{
+			if(stackOfCards[i].getCardAmount() != -1 && stackOfCards[i].getaSingularCard().getCardType().equalsIgnoreCase("Action"))
+			{
+				System.out.print("  " + stackOfCards[i].getaSingularCard().getCardCost() + "        ");
+			}		
 		}
 		System.out.println();
 		System.out.print("ADD BUY: ");
@@ -381,4 +448,4 @@ public class DominionPart5JRG
 		System.out.println("\n");
 	}
 }
-//Problems: Being able to get victory points, action stuff to output, and making output look nice, WILL BE CREATING METHODS FOR ALL OF IT..
+//Problems: Getting Circular linked list working, pretty sure I have discard working, shuff working properly, tons of things, a lot of learning was done.

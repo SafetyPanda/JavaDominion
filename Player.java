@@ -1,10 +1,14 @@
+//James Gillman
+//March 26th 2018
+//Dominion Part 7
+//Description: Holds all of the things that a player needs to grow and be strong
 
 public class Player
 {
-	private int playerID;
-	private CardList playerDeck; //
-	private CardList playerHand; // head to list
-	private CardList playerDiscard;
+	private int playerID; //Which player is it?
+	private CardList playerDeck; // Current players deck.
+	private CardList playerHand; // Current players hand.
+	private CardList playerDiscard; //Current players discard pile.
 	
 	public Player()
 	{
@@ -22,15 +26,13 @@ public class Player
 		this.playerID = pNum;
 		
 		playerDeck.findStartingCards(playerDeck, stackOfCards);
-		playerDeck.printLink();
 		playerDeck.shuffleDeck();
-		playerHand.moveCardToHand(playerDeck,playerHand,playerDiscard,5);
-		
+		playerHand.moveCardToHand(playerDeck,playerHand,playerDiscard,5);		
 	}
 
-	//
+	/////////////////////////
 	// GETTERS AND SETTERS //
-	//					   //
+	/////////////////////////
 	public int getPlayerID() {
 		return playerID;
 	}

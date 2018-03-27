@@ -1,3 +1,7 @@
+//James Gillman
+//mar 28th 2018
+//Dominion p7
+//Description: Holds all the methods and things pertaining to a player node.
 
 public class PlayerNode 
 {
@@ -17,39 +21,30 @@ public class PlayerNode
 	}
 	
 	
-	
+	//methodName: createPLayers
+	//parameters:maxPlayers: how many players are playing? stacksOfCards: array of all cards in the game.
+	//return: none
+	//Description: create the players and assign them a deck, discard and hand in the process.
 	public void createPlayers(int maxPlayers, PileJRG[] stacksOfCards)
 	{
 		
-		int count = 1; 
-		PlayerList listOfPlayers = new PlayerList();
-		Player temp = new Player(0,stacksOfCards);
-		//temp.setPlayerID(0);
-		PlayerNode head = new PlayerNode(null, temp);
+		int count = 1; //What player are we currently at?
+		PlayerList listOfPlayers = new PlayerList(); //List of all players that will be in the game.
+		Player firstPlayer = new Player(0,stacksOfCards); // the first player ever made.
+		PlayerNode head = new PlayerNode(null, firstPlayer);
 		
 		while(count < maxPlayers)
 		{
-			Player meow = new Player(count, stacksOfCards);
-			System.out.println("Adding Node " + count + " at Start" );
+			Player meow = new Player(count, stacksOfCards); //new instantiation of a player
 			head = listOfPlayers.insertAthead(meow, head);
 			//listOfPlayers.printCircleList();
 			count++;
-			//meow.getPlayerDeck().shuffleDeck(maxPlayers);
-			
+			//meow.getPlayerDeck().shuffleDeck(maxPlayers);	
 		}
 		this.setLink(head);
 		
 	}
-	
-	public PlayerNode nextPlayer(PlayerNode previous)
-	{
-		PlayerNode cur = new PlayerNode();
-		cur = previous;
-		cur.getLink().getLink();
-		return cur;
-	}
-	
-	
+		
 	////////////////////////
 	// GETTERS AND SETTERS//
 	////////////////////////

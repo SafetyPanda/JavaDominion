@@ -25,5 +25,14 @@ public interface Linkable
 			public void printHand();
 			
 			public int calculateGold();
+			
+			public int calculateVictoryPoints();
+			
+			public int calculateActions();
+			
+			public int calculateBuys();
+			
+			
+			
 }
 //Problems: Figuring out what methods are needed.

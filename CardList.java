@@ -1,8 +1,11 @@
-
+//Author:James Gillman
+//Date: Mar 25th 2018
+//DOMINION PART 7
+//Description: Holds all the methods for a linklist that surrounds decks, hands, and discards.
 
 public class CardList implements Linkable
 {
-	private CardNode head;
+	private CardNode head; //head of the linklist.
 	
 	public CardList()
 	{
@@ -49,10 +52,12 @@ public class CardList implements Linkable
 		            random.setACard(temp);
 		        }
 		    } 
-		    System.out.println("SHUFFLING THAT DECK!");
 		}
 		
-		
+		//MethodName:addToDecks
+		//Paramaters: aSingularCard: 
+		//Return: NONE
+		//Description: Adds card to decks, either discard or player.
 		public void addToDecks(CardJRG aSingularCard)
 		{
 			CardNode new_node = new CardNode();
@@ -61,10 +66,10 @@ public class CardList implements Linkable
 			head = new_node;	
 		}
 		
-		//
-		//
-		//
-		//
+		//MethodName:removeCardFromDiscard
+		//Parameters:PlayerDeck: Current players deck of cards
+		//Return: none
+		//Description Remove card from discard and transfer it to playerDeck
 		public void removeCardFromDiscard(CardList playerDeck)
 		{
 			CardNode cur = head;
@@ -72,6 +77,7 @@ public class CardList implements Linkable
 		    {
 		    	playerDeck.addToDecks(cur.getACard());
 				head = head.getLink();
+				cur.getLink();
 		    }
 		    else
 		    {
@@ -112,7 +118,6 @@ public class CardList implements Linkable
 				playerDiscard.removeCardFromDiscard(playerDeck);
 				cur = cur.getLink();
 			}
-			System.out.println("CREATING DECK FROM GRAVEYARD");
 		}
 		
 		//MethodName: moveCardToHand()
@@ -121,25 +126,23 @@ public class CardList implements Linkable
 		//Description: Grab cards from deck and move to players hand.
 		public void moveCardToHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int cardDraw)
 		{
-			int count = 0;
-			
-			
+			int count = 0; //how many cards has the player drawn?
+		
 			while(count < 5) //always draw 5.
 			{
 				CardNode cur = playerDeck.head;
 				if (cur == null)
 				{
-					System.out.println("DECK IS EMPTY, GOING TO DISCARD AND ");
 					playerDiscard.reviveGraveyard(playerDeck, playerDiscard);
 					cur = playerDeck.head;
 				}
 				
-				CardNode new_node = new CardNode();
+				CardNode newNode = new CardNode();
 				
-				new_node.setACard(cur.getACard());
-				new_node.setLink(head);
+				newNode.setACard(cur.getACard());
+				newNode.setLink(head);
 				
-				head = new_node;
+				head = newNode;
 				playerDeck.removeCardFromDeck(playerDiscard);
 				cur = cur.getLink();
 				count++;
@@ -147,11 +150,14 @@ public class CardList implements Linkable
 			
 		}
 		
-
+		//MethodName: findStartingCards
+		//Parameters: PlayerDeck: Current players deck of cards, stacksOfCards: array of each type of dominion card.
+		//Return: NONE
+		//Description: Finds starting cards for starting deck for each of the players.
 		public void findStartingCards(CardList playerDeck, PileJRG [] stacksOfCards)
 		{
-			String cardNeeded = "Copper";
-			int cardAmount;			
+			String cardNeeded = "Copper"; //What card is needed from the deck?
+			int cardAmount;		//How many cards are currently in the deck on the board?	
 			for ( int cardType = 0; cardType < 2; cardType++) 
 			{
 				for ( int i = 0; i < 20; i++)
@@ -182,6 +188,10 @@ public class CardList implements Linkable
 			}
 		}
 		
+		//MethodName:printLink
+		//Parameters: NONE
+		//Return: NONE
+		//Description: Prints the selected link lists nodes.
 		public void printLink()
 		{
 			CardNode cur = head;
@@ -192,7 +202,27 @@ public class CardList implements Linkable
 				cur = cur.getLink();
 			}
 		}
-
+		
+		//methodName: cleanHand
+		//Parameters: PlayerDeck: Current players deck of cards
+		//Return: NONE
+		//Description: Cleans the hand, and redraws new cards for the current player.
+		public void cleanHand(CardList playerDeck, CardList playerHand, CardList playerDiscard)
+		{
+			for(int i = 0; i < 5; i++)
+			{
+				if (head != null)
+				{
+					head = head.getLink();
+				}
+			}
+			moveCardToHand(playerDeck, playerHand, playerDiscard, 5);	
+		}
+		
+		//MethodName: printHand
+		//Parameters: None
+		//Return: None
+		//Description: Prints out current players hand.
 		public void printHand()
 		{
 			CardNode cur = head;
@@ -209,10 +239,14 @@ public class CardList implements Linkable
 			}
 		}
 		
+		//methodName: calculateGold
+		//Parameters: NONE
+		//Return: goldAmount: amount of gold the current players cards totals to.
+		//Description: Quick method to calculate current players gold amount in cards.
 		public int calculateGold()
 		{
 			CardNode cur = head;
-			int goldAmount = 0;
+			int goldAmount = 0; //players current goldAmount
 			
 			while (cur != null)
 			{
@@ -225,8 +259,67 @@ public class CardList implements Linkable
 			}
 			return goldAmount;
 		}
-
-
+				
+		// MethodName: calculateBuys
+		// Parameters: NONE
+		// Return: buyAmount
+		// Description: How many buys does the player have, by running through the players hand. 
+		public int calculateBuys()
+		{
+			CardNode cur = head;
+			int buyAmount = 0; //players current amount of buys they have.
+			
+			while (cur != null)
+			{
+				
+				if(cur.getACard().getCardType().equalsIgnoreCase("action"))
+				{
+					buyAmount = buyAmount + cur.getACard().getAddBuy(); 
+				}
+				cur = cur.getLink();
+			}
+			return buyAmount;
+		}
 		
-	
+		//MethodName: calculateActions
+		//Parameters: none
+		//Return: actionAmount
+		//Description. Runs through players hand calculating how many actions they currently have.
+		public int calculateActions()
+		{
+			CardNode cur = head;
+			int actionAmount = 0; //Total amount of actions in players hand.
+			
+			while (cur != null)
+			{
+				
+				if(cur.getACard().getCardType().equalsIgnoreCase("action"))
+				{
+					actionAmount = actionAmount + cur.getACard().getAddBuy(); 
+				}
+				cur = cur.getLink();
+			}
+			return actionAmount;
+		}
+		
+		//methodName: calculateVictoryPoints
+		//Parameters: none
+		//Return: finalPoints
+		//Description: Runs through players decks and gets their final scores!
+		public int calculateVictoryPoints()
+		{
+			CardNode cur = head;
+			int finalPoints = 0; //Total points in players deck.
+			
+			while (cur != null)
+			{
+				
+				if(cur.getACard().getCardType().equalsIgnoreCase("victory"))
+				{
+					finalPoints = finalPoints + cur.getACard().getVictoryPoints(); 
+				}
+				cur = cur.getLink();
+			}
+			return finalPoints;
+		}
 }
