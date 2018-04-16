@@ -24,13 +24,15 @@ public interface Linkable
 			
 			public void printHand();
 			
-			public int calculateGold();
+			public int calculateCurrency();
 			
 			public int calculateVictoryPoints();
 			
 			public int calculateActions();
 			
 			public int calculateBuys();
+			
+			public int remainingCardsInHand();
 			
 			
 			

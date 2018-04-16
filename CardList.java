@@ -126,27 +126,34 @@ public class CardList implements Linkable
 		//Description: Grab cards from deck and move to players hand.
 		public void moveCardToHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int cardDraw)
 		{
+			CardNode cur = playerDeck.head;
 			int count = 0; //how many cards has the player drawn?
-		
-			while(count < 5) //always draw 5.
+			int deckCount = 5;
+			
+			
+			while(count < cardDraw)
 			{
-				CardNode cur = playerDeck.head;
 				if (cur == null)
-				{
+				{	
 					playerDiscard.reviveGraveyard(playerDeck, playerDiscard);
 					cur = playerDeck.head;
 				}
 				
-				CardNode newNode = new CardNode();
-				
-				newNode.setACard(cur.getACard());
-				newNode.setLink(head);
-				
-				head = newNode;
-				playerDeck.removeCardFromDeck(playerDiscard);
+				System.out.println("in moveCardToHand");
+				CardNode tempNode = cur;
+				tempNode.setACard(cur.getACard());
 				cur = cur.getLink();
+				
+				tempNode.setLink(head);
+				
+				head = tempNode;
+				playerDeck.removeCardFromDeck(playerDiscard);
+				
 				count++;
+				System.out.println(count);
 			}
+			System.out.println(cur.getClass());
+			System.out.println("outside the while loop");
 			
 		}
 		
@@ -207,16 +214,15 @@ public class CardList implements Linkable
 		//Parameters: PlayerDeck: Current players deck of cards
 		//Return: NONE
 		//Description: Cleans the hand, and redraws new cards for the current player.
-		public void cleanHand(CardList playerDeck, CardList playerHand, CardList playerDiscard)
+		public void cleanHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int num)
 		{
-			for(int i = 0; i < 5; i++)
+			for(int i = 0; i < num; i++)
 			{
 				if (head != null)
 				{
 					head = head.getLink();
 				}
-			}
-			moveCardToHand(playerDeck, playerHand, playerDiscard, 5);	
+			}	
 		}
 		
 		//MethodName: printHand
@@ -226,16 +232,17 @@ public class CardList implements Linkable
 		public void printHand()
 		{
 			CardNode cur = head;
-		
+			int cardNumber = 1;
 			System.out.println("----------------------------------------------------------------------------------------");
 			System.out.println("CURRENT HAND:");
 			System.out.println("----------------------------------------------------------------------------------------");
 			while (cur != null)
 			{
 				
-				System.out.println("Card Type: [" + cur.getACard().cardType + "] Card Name: [" + cur.getACard().cardName + "] Card Cost: [" + cur.getACard().cardCost + "]");
+				System.out.println("[" + cardNumber + "] Card Type: [" + cur.getACard().cardType + "] Card Name: [" + cur.getACard().cardName + "] Card Cost: [" + cur.getACard().cardCost + "]");
 				System.out.println("");
 				cur = cur.getLink();
+				cardNumber++;
 			}
 		}
 		
@@ -243,21 +250,21 @@ public class CardList implements Linkable
 		//Parameters: NONE
 		//Return: goldAmount: amount of gold the current players cards totals to.
 		//Description: Quick method to calculate current players gold amount in cards.
-		public int calculateGold()
+		public int calculateCurrency()
 		{
 			CardNode cur = head;
-			int goldAmount = 0; //players current goldAmount
+			int currencyAmount = 0; //players current amoutn available to spend
 			
 			while (cur != null)
 			{
 				
 				if(cur.getACard().getCardType().equalsIgnoreCase("treasure"))
 				{
-					goldAmount = goldAmount + cur.getACard().getWorth(); 
+					currencyAmount = currencyAmount + cur.getACard().getWorth(); 
 				}
 				cur = cur.getLink();
 			}
-			return goldAmount;
+			return currencyAmount;
 		}
 				
 		// MethodName: calculateBuys
@@ -295,9 +302,13 @@ public class CardList implements Linkable
 				
 				if(cur.getACard().getCardType().equalsIgnoreCase("action"))
 				{
-					actionAmount = actionAmount + cur.getACard().getAddBuy(); 
+					actionAmount++; 
 				}
 				cur = cur.getLink();
+			}
+			if (actionAmount < 0)
+			{
+				actionAmount = 1;
 			}
 			return actionAmount;
 		}
@@ -321,5 +332,31 @@ public class CardList implements Linkable
 				cur = cur.getLink();
 			}
 			return finalPoints;
+		}
+		
+		public int remainingCardsInHand()
+		{
+			CardNode cur = head;
+			int numCards = 0;
+			while (cur != null)
+			{
+				cur = cur.getLink();
+				numCards++;	
+			}
+			return numCards;
+		}
+		
+		public CardJRG grabbingACard(int card)
+		{
+			CardNode cur = head;
+			CardJRG yourCard;
+			int count = 0;
+			while(count < card && cur != null)
+			{
+				cur = cur.getLink();
+				count++;
+			}
+			yourCard = cur.getACard();
+			return yourCard;
 		}
 }

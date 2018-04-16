@@ -15,7 +15,6 @@ public class DominionPart7JRG
 	
 	public static void main(String []args) throws IOException
 	{
-		boolean gameDone = false;
 		int pAns = 0;
 		PileJRG[ ] stacksOfCards = new PileJRG[20]; //Array of deck of cards!
 		PlayerNode plist = new PlayerNode();
@@ -24,12 +23,10 @@ public class DominionPart7JRG
 		pAns = createPlayers(stacksOfCards, plist);
 		input.nextLine();
 		
-		while(gameDone == false)
+		while(!checkCards(stacksOfCards))
 		{
 			plist = plist.getLink();
 			dominionMenu(stacksOfCards, plist);
-			
-			gameDone = checkCards(stacksOfCards);
 		}
 		plist = plist.getLink();
 		calculateFinalScores(plist, pAns);
@@ -54,14 +51,16 @@ public class DominionPart7JRG
 	//Description: Creates and allows the player to select different moves throughout the game.
 	public static void dominionMenu(PileJRG []stacksOfCards, PlayerNode plist)
 	{
-		int goldAmount;
-		int buyAmount = plist.getLink().getaPlayer().getPlayerHand().calculateBuys();
-		if (buyAmount == 0) //sets amount of buy moves they can do to one always, otherwise cards step in.
-		{
-			buyAmount = 1;
-		}
-		int addActions = plist.getLink().getaPlayer().getPlayerHand().calculateActions();
+		System.out.println("IN HERE");
+		int totalCurrency = plist.getLink().getaPlayer().getPlayerHand().calculateCurrency();
+		System.out.println("HERE");
+		int actionAmount = plist.getLink().getaPlayer().getPlayerHand().calculateActions();
+		System.out.println("HERE");
+		int addCards;
 		char answer;
+		int buyAmount = 1;
+		
+		
 		do
 		{
 			System.out.print("ITS YOUR TURN PLAYER: ");
@@ -73,11 +72,13 @@ public class DominionPart7JRG
 			System.out.println("|        WHAT DO YOU WANT TO DO?         |");
 			System.out.println("*----------------------------------------*");
 			System.out.println("| H: View Board and Current Players Hand |");
+			System.out.println("| A: Do Your Action Phase                |");
 			System.out.println("| B: Buy a Card                          |");
 			System.out.println("| Q: End Your Turn!                      |");
 			System.out.println("|----------------------------------------|");
-			System.out.println("| Total Actions In Hand Is: " + addActions +"            |");
-			System.out.println("| Total Buys Left Is: " + buyAmount +"                  |");
+			System.out.println("| Total Currency You Have Available Is: " + totalCurrency +"|");
+			System.out.println("| Total Buys you have Available is: " + buyAmount + "    |");
+			System.out.println("| Your Total Action Moves Available Is: " + actionAmount + "|");
 			System.out.println("*----------------------------------------*");
 			
 			answer = input.nextLine().toUpperCase().charAt(0);
@@ -92,58 +93,106 @@ public class DominionPart7JRG
 				}
 				case('B'):
 				{				
-					if(buyAmount > 0)
+					if(actionAmount < 0)
 					{
-						createBoard(stacksOfCards);
-						goldAmount = plist.getLink().getaPlayer().getPlayerHand().calculateGold();
-						goldAmount = buyingACard(stacksOfCards, plist, goldAmount);
-						buyAmount --;
-						break;
+						if(buyAmount > 0)
+						{
+							createBoard(stacksOfCards);
+							totalCurrency = buyingACard(stacksOfCards, plist, totalCurrency);
+						}
+						else
+						{
+							System.out.println("NO BUYS LEFT! Going back to menu!");
+							break;
+						}
 					}
 					else
 					{
-						System.out.println("You don't have any buys left. Choose something else...");
+						System.out.println("CAN'T BUY YET, YOU STILL HAVE ACTIONS TO DO! Going to Action Phase.");
+						actionPhase(stacksOfCards, plist);
 					}
+						break;
+				}
+				case ('A'):
+				{
+					CardJRG yourCardSir;
+					actionAmount --;
+					yourCardSir = actionPhase(stacksOfCards, plist);
+					actionAmount = yourCardSir.getAddAction();
+					addCards = yourCardSir.getAddCards();
+					buyAmount = yourCardSir.getAddBuy();
+					plist.getLink().getaPlayer().getPlayerHand().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), addCards);
+					
+					break;
 				}
 				case ('Q'):
 				{
-					System.out.println("Discarding all Cards in hand");
-					plist.getLink().getaPlayer().getPlayerHand().cleanHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard());	
+					System.out.println("Discarding all remaining Cards in hand");
+					int cardsLeft = plist.getLink().getaPlayer().getPlayerHand().remainingCardsInHand();
+					plist.getLink().getaPlayer().getPlayerHand().cleanHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), cardsLeft);
+					plist.getLink().getaPlayer().getPlayerHand().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), 5);
 				}
 			}	
 		}while(answer != 'Q');
 	}
 	
 	//MethodName: buyingACard
-	//Parameters:  stacksOfCards: array of every card type/name in the game. plist: circular linklist of players. goldAmount: how much gold does the player have?
-	//Return: goldAmount
+	//Parameters:  stacksOfCards: array of every card type/name in the game. plist: circular linklist of players. totalCurrency: how much gold does the player have?
+	//Return: totalCurrency
 	//Description: Allows player to buy a card and sends it to their discard.
-	public static int buyingACard(PileJRG []stacksOfCards, PlayerNode plist, int goldAmount)
+	public static int buyingACard(PileJRG []stacksOfCards, PlayerNode plist, int totalCurrency)
 	{
-		int cardChoice;
+	
 		System.out.println("Choose the card you want to buy.");
-		System.out.println("You have [" + goldAmount + "] gold available to spend!");
-		cardChoice = input.nextInt();
-		if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() <= goldAmount)
+		System.out.println("You have [" + totalCurrency + "] currency available to spend!");
+		int cardChoice = input.nextInt();
+		if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() <= totalCurrency)
 		{
 			System.out.println("Adding to discard");
-			goldAmount = goldAmount - stacksOfCards[cardChoice].getaSingularCard().getCardCost();
+			totalCurrency = totalCurrency - stacksOfCards[cardChoice].getaSingularCard().getCardCost();
 			plist.getLink().getaPlayer().getPlayerDiscard().addToDecks(stacksOfCards[cardChoice].getaSingularCard());
 			stacksOfCards[cardChoice].setCardAmount(stacksOfCards[cardChoice].getCardAmount() - 1);
 			String junk = input.nextLine();
 			System.out.println(junk);
 		}
-		else
+		else if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() > totalCurrency || cardChoice < 0)
 		{
-			System.out.println("Whoops! Looks like you don't have enough.");
-			System.out.println("Press Enter To Go back to the Menu");
-			String junk = input.nextLine();
-			System.out.println(junk);
-			input.nextLine();
+			if(cardChoice  < 0)
+			{
+				System.out.println("Tsk, Tsk, Not a valid Card Choice. Back to the menu you go");
+				System.out.println("Press Enter.");
+				input.nextLine();
+				
+			}
+			else
+			{
+				System.out.println("Whoops! Looks like you don't have enough.");
+				System.out.println("Press Enter To Go back to the Menu");
+				input.nextLine();
+			}
 		}
-		return goldAmount;
+		return totalCurrency;
 	}
 	
+	public static CardJRG actionPhase(PileJRG []stacksOfCards, PlayerNode plist)
+	{
+		int cardChoice; 
+		CardJRG yourCardSir;
+		do
+		{
+			outputCard(stacksOfCards);
+			plist.getaPlayer().getPlayerHand().printHand();
+			System.out.println("WHICH CARD DO YOU WANT TO PLAY? (Select a number)");
+			cardChoice = input.nextInt();
+			if (cardChoice < 0)
+			{
+				System.out.println("Thats not a real card! Try again!");
+			}
+		}while(cardChoice < 0);	
+		yourCardSir = plist.getaPlayer().getPlayerHand().grabbingACard(cardChoice);
+		input.nextLine();
+		return yourCardSir;	
+	}
 	//MethodName: checkCards
 	//Parameters: stackOfCards:
 	//Return: boolean of whether or not the array has three decks empty.
@@ -158,7 +207,7 @@ public class DominionPart7JRG
 				emptyStack++;
 			}
 		}
-			if(emptyStack <= 3)
+			if(emptyStack >= 3)
 			{
 				return true;
 			}
