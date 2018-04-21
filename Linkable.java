@@ -12,10 +12,6 @@ public interface Linkable
 			
 			public void findStartingCards(CardList playerDeck, PileJRG [] stackOfCards);
 			
-			public void removeCardFromDeck(CardList playerDiscard);
-			
-			public void removeCardFromDiscard(CardList playerDeck);
-
 			public void reviveGraveyard(CardList playerDeck, CardList playerDiscard);
 			
 			public void moveCardToHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int cardDraw);

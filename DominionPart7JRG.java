@@ -28,6 +28,7 @@ public class DominionPart7JRG
 			plist = plist.getLink();
 			dominionMenu(stacksOfCards, plist);
 		}
+		
 		plist = plist.getLink();
 		calculateFinalScores(plist, pAns);
 	}
@@ -51,11 +52,8 @@ public class DominionPart7JRG
 	//Description: Creates and allows the player to select different moves throughout the game.
 	public static void dominionMenu(PileJRG []stacksOfCards, PlayerNode plist)
 	{
-		System.out.println("IN HERE");
 		int totalCurrency = plist.getLink().getaPlayer().getPlayerHand().calculateCurrency();
-		System.out.println("HERE");
 		int actionAmount = plist.getLink().getaPlayer().getPlayerHand().calculateActions();
-		System.out.println("HERE");
 		int addCards;
 		char answer;
 		int buyAmount = 1;
@@ -85,20 +83,21 @@ public class DominionPart7JRG
 	
 			switch(answer)
 			{
-				case('H'):
+				case('H')://view
 				{
 					createBoard(stacksOfCards);
 					plist.getLink().getaPlayer().getPlayerHand().printHand();
 					break;
 				}
-				case('B'):
+				case('B')://buy
 				{				
-					if(actionAmount < 0)
+					if(actionAmount == 0)
 					{
-						if(buyAmount > 0)
+						if(buyAmount != 0)
 						{
 							createBoard(stacksOfCards);
-							totalCurrency = buyingACard(stacksOfCards, plist, totalCurrency);
+							totalCurrency += buyingACard(stacksOfCards, plist, totalCurrency);
+							buyAmount--;
 						}
 						else
 						{
@@ -115,21 +114,34 @@ public class DominionPart7JRG
 				}
 				case ('A'):
 				{
-					CardJRG yourCardSir;
-					actionAmount --;
-					yourCardSir = actionPhase(stacksOfCards, plist);
-					actionAmount = yourCardSir.getAddAction();
-					addCards = yourCardSir.getAddCards();
-					buyAmount = yourCardSir.getAddBuy();
-					plist.getLink().getaPlayer().getPlayerHand().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), addCards);
-					
+					if(actionAmount > 0)
+					{
+						CardJRG yourCardSir;
+						actionAmount --;
+						yourCardSir = actionPhase(stacksOfCards, plist);
+						if ( yourCardSir != null) 
+						{
+							actionAmount += yourCardSir.getAddAction();
+							addCards = yourCardSir.getAddCards();
+							buyAmount += yourCardSir.getAddBuy();
+							plist.getLink().getaPlayer().getPlayerHand().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), addCards);
+						}
+						else 
+						{
+							System.out.println("YOU DIDNT GRAB A CARD");
+						}
+					}
+					else
+					{
+						System.out.println("YOU GOT NO ACTIONS BOY, GOING TO BUY PHASE");
+						buyingACard(stacksOfCards, plist, totalCurrency);
+					}
 					break;
 				}
 				case ('Q'):
 				{
 					System.out.println("Discarding all remaining Cards in hand");
-					int cardsLeft = plist.getLink().getaPlayer().getPlayerHand().remainingCardsInHand();
-					plist.getLink().getaPlayer().getPlayerHand().cleanHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), cardsLeft);
+					plist.getLink().getaPlayer().getPlayerHand().cleanHand(plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard());
 					plist.getLink().getaPlayer().getPlayerHand().moveCardToHand(plist.getLink().getaPlayer().getPlayerDeck(), plist.getLink().getaPlayer().getPlayerHand(), plist.getLink().getaPlayer().getPlayerDiscard(), 5);
 				}
 			}	
@@ -173,26 +185,34 @@ public class DominionPart7JRG
 		}
 		return totalCurrency;
 	}
-	
+	//methodName: actionPhase
+	//Parameters: stacksOfCards: array of all cards on the board, plist: linked list of all players in game.
+	//Return: CardJRG
+	//Description: Lets player choose an action card to use.
 	public static CardJRG actionPhase(PileJRG []stacksOfCards, PlayerNode plist)
 	{
 		int cardChoice; 
-		CardJRG yourCardSir;
+		CardJRG yourCardSir = null;
+		outputCard(stacksOfCards);
 		do
 		{
-			outputCard(stacksOfCards);
-			plist.getaPlayer().getPlayerHand().printHand();
-			System.out.println("WHICH CARD DO YOU WANT TO PLAY? (Select a number)");
+			
+			plist.getLink().getaPlayer().getPlayerHand().printHand();
+			System.out.println("WHICH CARD DO YOU WANT TO PLAY? (Select a number) or -1 to quit.");
 			cardChoice = input.nextInt();
 			if (cardChoice < 0)
 			{
 				System.out.println("Thats not a real card! Try again!");
 			}
-		}while(cardChoice < 0);	
-		yourCardSir = plist.getaPlayer().getPlayerHand().grabbingACard(cardChoice);
+		}while(cardChoice < 0 && cardChoice != -1);	
+		if(cardChoice != -1)
+		{
+			yourCardSir = plist.getLink().getaPlayer().getPlayerHand().grabbingACard(cardChoice);
+		}
 		input.nextLine();
 		return yourCardSir;	
 	}
+	
 	//MethodName: checkCards
 	//Parameters: stackOfCards:
 	//Return: boolean of whether or not the array has three decks empty.

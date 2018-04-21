@@ -12,12 +12,11 @@ public class CardList implements Linkable
 		head = null;
 	}
 	
-	//ALL METHODS IN THE INTERFACE HAVE TO BE IN HERE...
 	
-	//MethodName:ShuffleDeck
-		//Parameters: TBD
+		//MethodName:ShuffleDeck
+		//Parameters: NONE
 		//Return: None
-		//Description: Shuffle decks!
+		//Description: Shuffle the deck!
 		public void shuffleDeck()
 		{
 			CardNode cur;
@@ -54,8 +53,20 @@ public class CardList implements Linkable
 		    } 
 		}
 		
+		//MethodName: MoveToDecks
+		//Parameter: fromList: Linked List that is being called to pass a node from.
+		//Return: NONE
+		//Description: Grabs a Node fromList and gives it to the list that is calling the function.
+		public void moveToDecks(CardList fromList)
+		{
+			CardNode tempNode = fromList.head;
+			fromList.head = fromList.head.getLink();
+			tempNode.setLink(null);
+			tempNode.setLink(head);
+			head = tempNode;
+		}
 		//MethodName:addToDecks
-		//Paramaters: aSingularCard: 
+		//Parameters: aSingularCard: 
 		//Return: NONE
 		//Description: Adds card to decks, either discard or player.
 		public void addToDecks(CardJRG aSingularCard)
@@ -65,97 +76,50 @@ public class CardList implements Linkable
 			new_node.setLink(head);
 			head = new_node;	
 		}
-		
-		//MethodName:removeCardFromDiscard
-		//Parameters:PlayerDeck: Current players deck of cards
-		//Return: none
-		//Description Remove card from discard and transfer it to playerDeck
-		public void removeCardFromDiscard(CardList playerDeck)
-		{
-			CardNode cur = head;
-			if (head != null)
-		    {
-		    	playerDeck.addToDecks(cur.getACard());
-				head = head.getLink();
-				cur.getLink();
-		    }
-		    else
-		    {
-		    	System.out.println("NO CARDS, Something went wrong...");
-		    	System.exit(0);
-		    }
-		}
-		
-		//MethodName: removeCard
-		//Parameters: TBD
-		//Return: NONE
-		//Description: Remove card from Players Hand
-		public void removeCardFromDeck(CardList playerDiscard)
-		{
-			CardNode cur = head;
-			if (head != null)
-		    {
-		    	playerDiscard.addToDecks(cur.getACard());
-				head = head.getLink();
-		    }
-		    else
-		    {
-		    	System.out.println("NO CARDS, Something went wrong...");
-		    }
-		}
-		
+				
 		//MethodName:reviveGraveyard
-		//Parameters:TBD
+		//Parameters:playerDecj: Current players available cards to be used. playerDiscard: players current unusable cards.
 		//Return:None
-		//Description: Grab Cards from Graveyard and shuffle back into deck
+		//Description: moves a node from playerDiscard list to playerDeck
 		public void reviveGraveyard(CardList playerDeck, CardList playerDiscard)
-		{
-			CardNode cur = head;
-			
-			while(cur != null)
+		{			
+			while(playerDiscard.head != null)
 			{
-				playerDeck.addToDecks(cur.getACard());
-				playerDiscard.removeCardFromDiscard(playerDeck);
-				cur = cur.getLink();
+				playerDeck.moveToDecks(playerDiscard); //Move discard card to deck
 			}
 		}
 		
 		//MethodName: moveCardToHand()
-		//Parameters: TBD
+		//Parameters: playerDeck: Current Players available cards to be used. playerDiscard: Players current unusable cards until deck runs out. cardDraw: How many cards are we drawing?
 		//Return: NONE
-		//Description: Grab cards from deck and move to players hand.
+		//Description: Grabs nodes from deck and move to players hand. If there are too few cards in deck to make a full draw then it re makes the deck with discard
 		public void moveCardToHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int cardDraw)
 		{
+			playerDeck.printLink();
 			CardNode cur = playerDeck.head;
 			int count = 0; //how many cards has the player drawn?
-			int deckCount = 5;
+			int cardCount = 0; //How many cards exist in the players hand?
+					
+			cur = playerDeck.head;
 			
-			
-			while(count < cardDraw)
+			while (cur != null)
 			{
-				if (cur == null)
-				{	
-					playerDiscard.reviveGraveyard(playerDeck, playerDiscard);
-					cur = playerDeck.head;
-				}
-				
-				System.out.println("in moveCardToHand");
-				CardNode tempNode = cur;
-				tempNode.setACard(cur.getACard());
+				cardCount++;
 				cur = cur.getLink();
-				
-				tempNode.setLink(head);
-				
-				head = tempNode;
-				playerDeck.removeCardFromDeck(playerDiscard);
-				
-				count++;
-				System.out.println(count);
 			}
-			System.out.println(cur.getClass());
-			System.out.println("outside the while loop");
-			
+			if (cardCount < cardDraw)
+			{	
+				playerDiscard.reviveGraveyard(playerDeck, playerDiscard);
+				cur = playerDeck.head;
+			}
+			cur = playerDeck.head;			
+			while(count < cardDraw)
+			{				
+				playerHand.moveToDecks(playerDeck);
+				count++;
+			}
 		}
+		
 		
 		//MethodName: findStartingCards
 		//Parameters: PlayerDeck: Current players deck of cards, stacksOfCards: array of each type of dominion card.
@@ -214,15 +178,13 @@ public class CardList implements Linkable
 		//Parameters: PlayerDeck: Current players deck of cards
 		//Return: NONE
 		//Description: Cleans the hand, and redraws new cards for the current player.
-		public void cleanHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int num)
+		public void cleanHand(CardList playerHand, CardList playerDiscard)
 		{
-			for(int i = 0; i < num; i++)
+			while (head != null)
 			{
-				if (head != null)
-				{
-					head = head.getLink();
-				}
-			}	
+				playerDiscard.moveToDecks(playerHand);
+			}
+			playerHand = null;		
 		}
 		
 		//MethodName: printHand
@@ -239,7 +201,12 @@ public class CardList implements Linkable
 			while (cur != null)
 			{
 				
-				System.out.println("[" + cardNumber + "] Card Type: [" + cur.getACard().cardType + "] Card Name: [" + cur.getACard().cardName + "] Card Cost: [" + cur.getACard().cardCost + "]");
+				System.out.print("[" + cardNumber + "] Card Type: [" + cur.getACard().cardType + "] Card Name: [" + cur.getACard().cardName + "] Card Cost: [" + cur.getACard().cardCost + "]");
+				if(cur.getACard().cardType.equalsIgnoreCase("Action"))
+				{
+					System.out.print("Add Cards: [" + cur.getACard().getAddCards() + "] Add Buy Phase: +[" + cur.getACard().getAddBuy() + "] Add Action Phase: +[" + cur.getACard().getAddAction() + "]");
+				}
+				
 				System.out.println("");
 				cur = cur.getLink();
 				cardNumber++;
@@ -296,21 +263,19 @@ public class CardList implements Linkable
 		{
 			CardNode cur = head;
 			int actionAmount = 0; //Total amount of actions in players hand.
-			
+			System.out.println("IN CALCACTIONS");
 			while (cur != null)
 			{
 				
 				if(cur.getACard().getCardType().equalsIgnoreCase("action"))
 				{
-					actionAmount++; 
+					//actionAmount++; 
+					return 1;
 				}
 				cur = cur.getLink();
 			}
-			if (actionAmount < 0)
-			{
-				actionAmount = 1;
-			}
-			return actionAmount;
+			
+			return 0;
 		}
 		
 		//methodName: calculateVictoryPoints
@@ -350,7 +315,7 @@ public class CardList implements Linkable
 		{
 			CardNode cur = head;
 			CardJRG yourCard;
-			int count = 0;
+			int count = 1;
 			while(count < card && cur != null)
 			{
 				cur = cur.getLink();
