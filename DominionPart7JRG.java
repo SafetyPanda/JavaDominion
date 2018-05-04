@@ -1,5 +1,5 @@
 // James Gillman
-// 3/26/2018
+// 5/1/2018
 // Dominion P7
 // Plays a whole game of dominion. 
 
@@ -61,7 +61,7 @@ public class DominionPart7JRG
 		
 		do
 		{
-			System.out.print("ITS YOUR TURN PLAYER: ");
+			System.out.print("ITS YOUR TURN PLAYER ");
 			
 			System.out.print(plist.getLink().getaPlayer().getPlayerID() + 1);
 			System.out.println("!");
@@ -96,7 +96,7 @@ public class DominionPart7JRG
 						if(buyAmount != 0)
 						{
 							createBoard(stacksOfCards);
-							totalCurrency += buyingACard(stacksOfCards, plist, totalCurrency);
+							totalCurrency = buyingACard(stacksOfCards, plist, totalCurrency);
 							buyAmount--;
 						}
 						else
@@ -107,7 +107,7 @@ public class DominionPart7JRG
 					}
 					else
 					{
-						System.out.println("CAN'T BUY YET, YOU STILL HAVE ACTIONS TO DO! Going to Action Phase.");
+						System.out.println("CAN'T BUY YET, YOU STILL HAVE ACTIONS TO DO! Going to Action Phase...");
 						actionPhase(stacksOfCards, plist);
 					}
 						break;
@@ -157,8 +157,14 @@ public class DominionPart7JRG
 	
 		System.out.println("Choose the card you want to buy.");
 		System.out.println("You have [" + totalCurrency + "] currency available to spend!");
+		System.out.println("Enter -1 to exit and thus ending your Buy Phase.");
 		int cardChoice = input.nextInt();
-		if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() <= totalCurrency)
+		if (cardChoice == -1)
+		{
+			System.out.println("No card for you! :(");
+			input.nextLine();
+		}
+		else if(stacksOfCards[cardChoice].getaSingularCard().getCardCost() <= totalCurrency)
 		{
 			System.out.println("Adding to discard");
 			totalCurrency = totalCurrency - stacksOfCards[cardChoice].getaSingularCard().getCardCost();
@@ -207,7 +213,8 @@ public class DominionPart7JRG
 		}while(cardChoice < 0 && cardChoice != -1);	
 		if(cardChoice != -1)
 		{
-			yourCardSir = plist.getLink().getaPlayer().getPlayerHand().grabbingACard(cardChoice);
+			yourCardSir = plist.getLink().getaPlayer().getPlayerHand().grabbingACard(cardChoice, plist.getLink().getaPlayer().getPlayerDiscard());
+			System.out.println("CARD RECIEVED:" + yourCardSir.getCardName());
 		}
 		input.nextLine();
 		return yourCardSir;	
@@ -324,7 +331,7 @@ public class DominionPart7JRG
 					addAction = fin.nextInt();
 					addBuy = fin.nextInt();
 					//specialInfo = fin.nextLine();
-					ActionJRG actionCards = new ActionJRG(cardType, cardName, cardCost, worth, victoryPoints, addCards, addAction, addBuy);
+					ActionJRG actionCards = new ActionJRG(cardType, cardName, cardCost, worth, addCards, addAction, addBuy, victoryPoints);
 					stackOfCards[cardNumber].setaSingularCard ( actionCards );	
 					stackOfCards[cardNumber].setCardAmount(numberOfCards);
 					fin.next( );

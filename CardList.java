@@ -12,7 +12,6 @@ public class CardList implements Linkable
 		head = null;
 	}
 	
-	
 		//MethodName:ShuffleDeck
 		//Parameters: NONE
 		//Return: None
@@ -95,7 +94,6 @@ public class CardList implements Linkable
 		//Description: Grabs nodes from deck and move to players hand. If there are too few cards in deck to make a full draw then it re makes the deck with discard
 		public void moveCardToHand(CardList playerDeck, CardList playerHand, CardList playerDiscard, int cardDraw)
 		{
-			playerDeck.printLink();
 			CardNode cur = playerDeck.head;
 			int count = 0; //how many cards has the player drawn?
 			int cardCount = 0; //How many cards exist in the players hand?
@@ -262,8 +260,6 @@ public class CardList implements Linkable
 		public int calculateActions()
 		{
 			CardNode cur = head;
-			int actionAmount = 0; //Total amount of actions in players hand.
-			System.out.println("IN CALCACTIONS");
 			while (cur != null)
 			{
 				
@@ -299,6 +295,10 @@ public class CardList implements Linkable
 			return finalPoints;
 		}
 		
+		// MethodName: remainingCardsInHand
+		// Parameters: NONE
+		// Return: numCards
+		// Runs through playerHand and checks how many cards are currently there.
 		public int remainingCardsInHand()
 		{
 			CardNode cur = head;
@@ -311,17 +311,31 @@ public class CardList implements Linkable
 			return numCards;
 		}
 		
-		public CardJRG grabbingACard(int card)
+		//methodName: grabbingACard
+		//Parameters: card: how many cards are we drawing, playerDiscard: Players linkList of Discard.
+		//Return: yourCard
+		//Description: Grabs a card from players hand, and moves it to discard.
+		public CardJRG grabbingACard(int card, CardList playerDiscard)
 		{
 			CardNode cur = head;
+			CardNode prev = head;
+				
 			CardJRG yourCard;
+			
 			int count = 1;
-			while(count < card && cur != null)
+			while(count < card && head != null)
 			{
+				prev = cur;
 				cur = cur.getLink();
 				count++;
 			}
+			
 			yourCard = cur.getACard();
+			prev.setLink(cur.getLink());
+			cur.setLink(null);
+			playerDiscard.addToDecks(cur.getACard());
+			cur.setLink(null);
+						
 			return yourCard;
 		}
 }
